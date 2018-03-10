@@ -37,4 +37,5 @@ config_setting(
         name = "avr-config",
         values = {
                 "cpu": "avr",
-                })
+                },
+        visibility = ["//visibility:public"])
