@@ -1,3 +1,3 @@
 workspace (
-        name = "AVR-Toolchain",
+        name = "AVR_Toolchain",
         )
