@@ -19,9 +19,16 @@ def avr_cmock_copts():
   })
 
 def avr_cexception_copts():
-    select({
+    return select({
         "@AVR_Toolchain//:avr-config": ["-DCEXCEPTION_NONE=0x00",
                                         "-DEXCEPTION_T=uint8_t",
-                                        "-mmcu=$(MCU)"],
+                                        "-mmcu=$(MCU)",
+                                        "-O2"],
         "//conditions:default": [],
     })
+
+def avr_minimal_copts():
+  return select({
+      "@AVR_Toolchain//:avr-config": ["-mmcu=$(MCU)", "-O2"],
+      "//conditions:default": [],
+  })
