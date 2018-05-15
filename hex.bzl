@@ -4,12 +4,12 @@ def generate_hex(name, input, mcu):
         srcs = [input],
         outs = [input + ".hex"],
         cmd = "avr-objcopy -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); avr-size --mcu=%s --format avr $(OUTS)" % (mcu),
-        testonly = 1,
     )
 
 def avr_cmock_copts():
+  name = "@AVR_Toolchain"
   return select({
-      "@AVR_Toolchain//:avr-config": ["-DCEXCEPTION_NONE=0x00",
+      name + "//:avr-config": ["-DCEXCEPTION_NONE=0x00",
                                       "-DEXCEPTION_T=uint8_t",
                                       "-DCMOCK_MEM_SIZE=512",
                                       "-DCMOCK_MEM_STATIC",
@@ -24,6 +24,18 @@ def avr_cexception_copts():
                                         "-DEXCEPTION_T=uint8_t",
                                         "-mmcu=$(MCU)",
                                         "-O2"],
+        "//conditions:default": [],
+    })
+
+def avr_unity_copts():
+  return select({
+        "@AVR_Toolchain//:avr-config": [
+            "-mmcu=$(MCU)",
+            "-include 'lib/include/UnityOutput.h'",
+            "-DUNITY_OUTPUT_CHAR(a)=UnityOutput_write(a)",
+            "-DUNITY_OUTPUT_START()=UnityOutput_init(9600)",
+            "-include stddef.h",
+            "-O2",],
         "//conditions:default": [],
     })
 
