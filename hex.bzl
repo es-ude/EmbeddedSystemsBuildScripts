@@ -3,7 +3,7 @@ def generate_hex(name, input, mcu, testonly=0):
         name = name,
         srcs = [input],
         outs = [input + ".hex"],
-        cmd = "avr-objcopy -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); avr-size --mcu=%s --format avr $(OUTS)" % (mcu),
+        cmd = "avr-objcopy -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); avr-size --mcu=%s --format avr $(SRCS)" % (mcu),
 		testonly = testonly,
     )
 
