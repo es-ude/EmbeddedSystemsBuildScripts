@@ -100,5 +100,5 @@ toolchain {
 
     cxx_builtin_include_directory: "/usr/lib/gcc/avr/4.9.2/include"
     cxx_builtin_include_directory: "/usr/lib/gcc/avr/4.9.2/include-fixed"
-    cxx_builtin_include_directory: "/usr/avr/include"
+    cxx_builtin_include_directory: "/usr/lib/avr/include"
  }
