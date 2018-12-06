@@ -13,7 +13,8 @@ cc_toolchain_suite(
     name = "toolchain",
     toolchains = {
         # this line maps the pair <cpu>|<compiler> to a <cc_toolchain rule>
-        "avr|gcc": ":cc-compiler-avr-gcc"
+        "avr|gcc": ":cc-compiler-avr-gcc",
+        "avr": ":cc-compiler-avr-gcc"
     }
 )
 
@@ -21,6 +22,7 @@ filegroup(name = "empty")
 
 cc_toolchain(
     name = "cc-compiler-avr-gcc", # is referred in the toolchain_suite above
+    toolchain_identifier = "avr-gnu-toolchain-linux_x86_64",
     all_files = ":empty",
     compiler_files = ":empty",
     cpu = "avr", # chooses the compiler to use (compiler is defined in the CROSSTOOLS file)
