@@ -88,20 +88,20 @@ def default_embedded_lib(name, hdrs = [], srcs = [], deps = [], copts = [], visi
         hdrs = hdrs,
         srcs = srcs,
         deps = deps + ["@CException"],
-        copts = avr_minimal_copts() +
+        copts = copts + avr_minimal_copts() +
                 __CODE_SIZE_OPTIMIZATION_COPTS +
                 __CEXCEPTION_COPTS,
         visibility = visibility,
     )
 
-def default_embedded_binary(name, srcs = [], deps = [], copts = [], visibility = []):
+    def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts=[], visibility = []):
     native.cc_binary(
         name = name + "ELF",
         srcs = srcs,
         deps = deps + ["@CException"],
-        copts = avr_minimal_copts() +
+        copts = copts + avr_minimal_copts() +
                 __CODE_SIZE_OPTIMIZATION_COPTS,
-        linkopts = avr_minimal_copts() +
+        linkopts = linkopts + avr_minimal_copts() +
                    __CODE_SIZE_OPTIMIZATION_LINKOPTS +
                    __CEXCEPTION_COPTS,
         visibility = visibility,
