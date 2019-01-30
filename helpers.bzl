@@ -94,7 +94,7 @@ def default_embedded_lib(name, hdrs = [], srcs = [], deps = [], copts = [], visi
         visibility = visibility,
     )
 
-    def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts=[], visibility = []):
+def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts=[], visibility = []):
     native.cc_binary(
         name = name + "ELF",
         srcs = srcs,
