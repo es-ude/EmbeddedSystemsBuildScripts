@@ -70,7 +70,6 @@ __CODE_SIZE_OPTIMIZATION_COPTS = [
     "-DCEXCEPTION_T=uint8_t",
     "-DCEXCEPTION_NONE=0x00",
     "-fshort-enums",
-    "-mrelax",
     "-fno-jump-tables",
 ]
 
@@ -90,11 +89,15 @@ def default_embedded_lib(name, hdrs = [], srcs = [], deps = [], copts = [], visi
         deps = deps + ["@CException"],
         copts = copts + avr_minimal_copts() +
                 __CODE_SIZE_OPTIMIZATION_COPTS +
-                __CEXCEPTION_COPTS,
+                __CEXCEPTION_COPTS +
+                select({
+                    "@AVR_Toolchain//:avr-config": ["-mrelax"],
+                    "//conditions:default": [],
+                }),
         visibility = visibility,
     )
 
-def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts=[], visibility = []):
+def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts = [], visibility = []):
     native.cc_binary(
         name = name + "ELF",
         srcs = srcs,
@@ -103,7 +106,11 @@ def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts=[],
                 __CODE_SIZE_OPTIMIZATION_COPTS,
         linkopts = linkopts + avr_minimal_copts() +
                    __CODE_SIZE_OPTIMIZATION_LINKOPTS +
-                   __CEXCEPTION_COPTS,
+                   __CEXCEPTION_COPTS +
+                   select({
+                       "@AVR_Toolchain//:avr-config": ["-mrelax"],
+                       "//conditions:default": [],
+                   }),
         visibility = visibility,
     )
     generate_hex(
