@@ -240,6 +240,17 @@ def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts = [
         input = name + "ELF",
     )
 
+    def default_embedded_binaries(main_files, other_srcs = [], deps = [], copts = [], linkopts = [], visibility = []):
+        for file in main_files:
+            default_embedded_binary(
+                name = file.rpartition(".")[0].rpartition("/")[2],
+                srcs = other_srcs + [file],
+                deps = deps,
+                copts = copts,
+                linkopts = linkopts,
+                visibility = visibility,
+            )
+
 
 """
 
