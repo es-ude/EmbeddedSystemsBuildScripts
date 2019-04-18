@@ -129,7 +129,7 @@ def generate_hex(name, input, testonly = 0, mcu = ""):
 
 def avr_cmock_copts():
     name = "@{avr_toolchain_project}"
-    return select({
+    return select({{
         name + "//:avr-config": [
             "-DCEXCEPTION_NONE=0x00",
             "-DEXCEPTION_T=uint8_t",
@@ -139,10 +139,10 @@ def avr_cmock_copts():
             "-O2",
         ],
         "//conditions:default": [],
-    })
+    }})
 
 def avr_cexception_copts():
-    return select({
+    return select({{
         "@{avr_toolchain_project}//:avr-config": [
             "-DCEXCEPTION_NONE=0x00",
             "-DEXCEPTION_T=uint8_t",
@@ -150,10 +150,10 @@ def avr_cexception_copts():
             "-O2",
         ],
         "//conditions:default": [],
-    })
+    }})
 
 def avr_unity_copts():
-    return select({
+    return select({{
         "@{avr_toolchain_project}//:avr-config": [
             "-mmcu=$(MCU)",
             "-include 'lib/include/UnityOutput.h'",
@@ -163,13 +163,13 @@ def avr_unity_copts():
             "-O2",
         ],
         "//conditions:default": [],
-    })
+    }})
 
 def avr_minimal_copts():
-    return select({
+    return select({{
         "@{avr_toolchain_project}//:avr-config": ["-mmcu=$(MCU)"],
         "//conditions:default": [],
-    })
+    }})
 
 __CEXCEPTION_COPTS = [
     "-DCEXCEPTION_NONE=0x00",
@@ -210,10 +210,10 @@ def default_embedded_lib(name, hdrs = [], srcs = [], deps = [], copts = [], visi
         copts = copts + avr_minimal_copts() +
                 __CODE_SIZE_OPTIMIZATION_COPTS +
                 __CEXCEPTION_COPTS +
-                select({
+                select({{
                     "@{avr_toolchain_project}//:avr-config": ["-mrelax"],
                     "//conditions:default": [],
-                }),
+                }}),
         visibility = visibility,
     )
 
@@ -227,10 +227,10 @@ def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts = [
         linkopts = linkopts + avr_minimal_copts() +
                    __CODE_SIZE_OPTIMIZATION_LINKOPTS +
                    __CEXCEPTION_COPTS +
-                   select({
+                   select({{
                        "@{avr_toolchain_project}//:avr-config": ["-mrelax"],
                        "//conditions:default": [],
-                   }),
+                   }}),
         visibility = visibility,
     )
     generate_hex(
@@ -297,6 +297,7 @@ def _get_avr_toolchain_def(ctx):
         ))
     ctx.file("helpers.bzl", _embedded_lib_helper_macros.format(
         cexception = ctx.attr.cexception,
+        avr_toolchain_project = ctx.attr.name,
 
     ))
     ctx.file("cc_toolchain_config.bzl", _cc_toolchain_config_template)
