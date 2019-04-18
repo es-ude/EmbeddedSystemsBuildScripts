@@ -17,6 +17,15 @@ package(default_visibility = ['//visibility:public'])
 
 filegroup(name = "empty")
 
+config_setting(
+        name = "avr-config",
+        values = {{
+                "cpu": "avr",
+                }},
+        visibility = ["//visibility:public"]
+        )
+
+
 cc_toolchain_suite(
     name = "avr-gcc",
     toolchains = {{
@@ -110,13 +119,6 @@ cc_toolchain_config = rule(
 """
 
 _embedded_lib_helper_macros = """
-config_setting(
-        name = "avr-config",
-        values = {{
-                "cpu": "avr",
-                }},
-        visibility = ["//visibility:public"]
-        )
 
 def generate_hex(name, input, testonly = 0):
     native.genrule(
