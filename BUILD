@@ -27,10 +27,8 @@ cc_toolchain(
     compiler_files = ":empty",
     cpu = "avr", # chooses the compiler to use (compiler is defined in the CROSSTOOLS file)
     dwp_files = ":empty",
-    dynamic_runtime_libs = [":empty"],
     linker_files = ":empty",
     objcopy_files = ":empty",
-    static_runtime_libs = [":empty"],
     strip_files = ":empty",
     supports_param_files = 1,
 )
