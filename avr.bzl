@@ -125,7 +125,7 @@ def generate_hex(name, input, testonly = 0):
         name = name,
         srcs = [input],
         outs = [name + ".hex"],
-        cmd = "avr-objcopy -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); /home/lukas/avr-toolchain/install/bin/avr-size --mcu=$(MCU) --format avr $(SRCS)",  # % (mcu),
+        cmd = "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=$(MCU) --format avr $(SRCS)",  # % (mcu),
         testonly = testonly,
     )
 
@@ -247,7 +247,7 @@ _INC_DIR_MARKER_BEGIN = "#include <...>"
 
 # OSX add " (framework directory)" at the end of line, strip it.
 _OSX_FRAMEWORK_SUFFIX = " (framework directory)"
-_OSX_FRAMEWORK_SUFFIX_LEN =  len(_OSX_FRAMEWORK_SUFFIX)
+_OSX_FRAMEWORK_SUFFIX_LEN = len(_OSX_FRAMEWORK_SUFFIX)
 
 def _cxx_inc_convert(path):
     """Convert path returned by cc -E xc++ in a complete path."""
@@ -257,26 +257,28 @@ def _cxx_inc_convert(path):
     return path
 
 def _get_cxx_inc_directories(repository_ctx, cc):
-  """Compute the list of default C++ include directories."""
-  result = repository_ctx.execute([cc, "-E", "-xc++", "-", "-v"])
-  index1 = result.stderr.find(_INC_DIR_MARKER_BEGIN)
-  if index1 == -1:
-    return []
-  index1 = result.stderr.find("\n", index1)
-  if index1 == -1:
-    return []
-  index2 = result.stderr.rfind("\n ")
-  if index2 == -1 or index2 < index1:
-    return []
-  index2 = result.stderr.find("\n", index2 + 1)
-  if index2 == -1:
-    inc_dirs = result.stderr[index1 + 1:]
-  else:
-    inc_dirs = result.stderr[index1 + 1:index2].strip()
+    """Compute the list of default C++ include directories."""
+    result = repository_ctx.execute([cc, "-E", "-xc++", "-", "-v"])
+    index1 = result.stderr.find(_INC_DIR_MARKER_BEGIN)
+    if index1 == -1:
+        return []
+    index1 = result.stderr.find("\n", index1)
+    if index1 == -1:
+        return []
+    index2 = result.stderr.rfind("\n ")
+    if index2 == -1 or index2 < index1:
+        return []
+    index2 = result.stderr.find("\n", index2 + 1)
+    if index2 == -1:
+        inc_dirs = result.stderr[index1 + 1:]
+    else:
+        inc_dirs = result.stderr[index1 + 1:index2].strip()
 
-  paths = [repository_ctx.path(_cxx_inc_convert(p))
-            for p in inc_dirs.split("\n")]
-  return ['{}'.format(x) for x in paths]
+    paths = [
+        repository_ctx.path(_cxx_inc_convert(p))
+        for p in inc_dirs.split("\n")
+    ]
+    return ["{}".format(x) for x in paths]
 
 def _get_avr_toolchain_def(ctx):
     repo_root = ctx.path(".")
@@ -284,34 +286,56 @@ def _get_avr_toolchain_def(ctx):
     if avr_gcc == "":
         avr_gcc = ctx.which("avr-gcc")
     host_system_name = "linux"
-
+    tools = {
+        "avr-gcc": ctx.attr.avr_gcc,
+        "avr-ar": ctx.attr.avr_ar,
+        "avr-ld": ctx.attr.avr_ld,
+        "avr-g++": ctx.attr.avr_cpp,
+        "avr-gcov": ctx.attr.avr_gcov,
+        "avr-nm": ctx.attr.avr_nm,
+        "avr-objdump": ctx.attr.avr_objdump,
+        "avr-strip": ctx.attr.avr_strip,
+        "avr-size": ctx.attr.avr_size,
+        "avr-objcopy": ctx.attr.avr_objcopy,
+    }
+    for key in tools.keys():
+        if tools[key] == "":
+            tools[key] = ctx.which(key)
     ctx.file("BUILD", avr_toolchain_build_file_template.format(
-        host_system_name=host_system_name,
-        avr_gcc=ctx.which("avr-gcc"),
-        avr_ar =ctx.which("avr-ar"),
-        avr_ld =ctx.which("avr-ld"),
-        avr_cpp =ctx.which("avr-cpp"),
-        avr_gcov=ctx.which("avr-gcov"),
-        avr_nm=ctx.which("avr-nm"),
-        avr_objdump=ctx.which("avr-objdump"),
-        avr_strip=ctx.which("avr-strip"),
-        cxx_include_dirs=_get_cxx_inc_directories(ctx, ctx.which("avr-gcc"))
-        ))
+        host_system_name = host_system_name,
+        avr_gcc = tools["avr-gcc"],
+        avr_ar = tools["avr-ar"],
+        avr_ld = tools["avr-ld"],
+        avr_cpp = tools["avr-g++"],
+        avr_gcov = tools["avr-gcov"],
+        avr_nm = tools["avr-nm"],
+        avr_objdump = tools["avr-objdump"],
+        avr_strip = tools["avr-strip"],
+        cxx_include_dirs = _get_cxx_inc_directories(ctx, ctx.which("avr-gcc")),
+    ))
     ctx.file("helpers.bzl", _embedded_lib_helper_macros.format(
         cexception = ctx.attr.cexception,
         avr_toolchain_project = ctx.attr.name,
-
+        avr_objcopy = tools["avr-objcopy"],
+        avr_size = tools["avr-size"],
     ))
     ctx.file("cc_toolchain_config.bzl", _cc_toolchain_config_template)
 
 _get_avr_toolchain_def_attrs = {
     "avr_gcc": attr.string(),
-    "cexception": attr.string(default="@CException"),
-    "avr_size": attr.string(default="avr-size"),
+    "cexception": attr.string(default = "@CException"),
+    "avr_size": attr.string(),
+    "avr_ar": attr.string(),
+    "avr_ld": attr.string(),
+    "avr_cpp": attr.string(),
+    "avr_gcov": attr.string(),
+    "avr_nm": attr.string(),
+    "avr_objdump": attr.string(),
+    "avr_strip": attr.string(),
+    "avr_objcopy": attr.string(),
 }
 
 create_avr_toolchain = repository_rule(
     implementation = _get_avr_toolchain_def,
     attrs = _get_avr_toolchain_def_attrs,
 )
-    
