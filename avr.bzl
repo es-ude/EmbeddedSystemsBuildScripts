@@ -118,7 +118,7 @@ config_setting(
         visibility = ["//visibility:public"]
         )
 
-def generate_hex(name, input, testonly = 0, mcu = ""):
+def generate_hex(name, input, testonly = 0):
     native.genrule(
         name = name,
         srcs = [input],
@@ -206,7 +206,7 @@ def default_embedded_lib(name, hdrs = [], srcs = [], deps = [], copts = [], visi
         name = name,
         hdrs = hdrs,
         srcs = srcs,
-        deps = deps + [{cexception}],
+        deps = deps + ["{cexception}"],
         copts = copts + avr_minimal_copts() +
                 __CODE_SIZE_OPTIMIZATION_COPTS +
                 __CEXCEPTION_COPTS +
@@ -221,7 +221,7 @@ def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts = [
     native.cc_binary(
         name = name + "ELF",
         srcs = srcs,
-        deps = deps + [{cexception}],
+        deps = deps + ["{cexception}"],
         copts = copts + avr_minimal_copts() +
                 __CODE_SIZE_OPTIMIZATION_COPTS,
         linkopts = linkopts + avr_minimal_copts() +
