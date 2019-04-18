@@ -101,36 +101,7 @@ def _impl(ctx):
             path = tools[key],
         ) for key in tools
     ]
-    features = [
-        feature (
-            name = "avr-optimize-for-size",
-            requires = [with_feature_set(features = ["opt"])],
-            flag_sets = [
-                flag_set(
-                    actions = [
-                        "ACTION_NAMES.c_compile",
-                        "ACTION_NAMES.cpp_compile",
-                    ],
-                    flag_groups = [
-                        flag_group(
-                            flags = ["-Os"],
-                        ),
-                    ],
-                ),
-                flag_set(
-                    actions = [
-                        "ACTION_NAMES.c_link_executable",
-                        "ACTION_NAMES.cpp_link_executable",
-                        ],
-                    flag_groups = [
-                        flag_group(
-                            flags = ["-Os"],
-                        ),
-                    ],
-                ),
-            ],
-        ),
-    ]
+
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         toolchain_identifier = "avr-toolchain",
@@ -143,7 +114,6 @@ def _impl(ctx):
         abi_libc_version = "unknown",
         tool_paths = tool_paths,
         cxx_builtin_include_directories = ctx.attr.cxx_include_dirs,
-        features = features
     )
 
 
