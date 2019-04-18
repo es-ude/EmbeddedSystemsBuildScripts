@@ -1,31 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "workspace_and_buildfile")
 
 """
-Preliminary primitive rules for cloning git repositories.
-"""
-def _clone_git_impl(ctx):
-    repo_root = ctx.path(".")
-    git = ctx.which("git")
-    ctx.execute([git, "clone", ctx.attr.url, "."])
-
-_clone_git_impl_attrs = {
-    "url": attr.string(),
-}
-
-clone_git = repository_rule(
-    implementation = _clone_git_impl,
-    attrs = _clone_git_impl_attrs,
-    doc = """
-    This rule calls the git executable
-    provided by the OS directly. If you need
-    authentication, you have to make sure that
-    git handles that on its own.
-        url: The url of the repository. Internally the call 'git clone <url>' will be issued.
-    """
-)
-
-
-"""
 This template is used to
 autogenerate a build file containing
 the avr-gcc toolchain setup that was
@@ -133,11 +108,145 @@ cc_toolchain_config = rule(
 )
 
 """
+
+_embedded_lib_helper_macros = """
+config_setting(
+        name = "avr-config",
+        values = {
+                "cpu": "avr",
+                },
+        visibility = ["//visibility:public"]
+        )
+
+def generate_hex(name, input, testonly = 0, mcu = ""):
+    native.genrule(
+        name = name,
+        srcs = [input],
+        outs = [name + ".hex"],
+        cmd = "avr-objcopy -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); /home/lukas/avr-toolchain/install/bin/avr-size --mcu=$(MCU) --format avr $(SRCS)",  # % (mcu),
+        testonly = testonly,
+    )
+
+def avr_cmock_copts():
+    name = "@{avr_toolchain_project}"
+    return select({
+        name + "//:avr-config": [
+            "-DCEXCEPTION_NONE=0x00",
+            "-DEXCEPTION_T=uint8_t",
+            "-DCMOCK_MEM_SIZE=512",
+            "-DCMOCK_MEM_STATIC",
+            "-mmcu=$(MCU)",
+            "-O2",
+        ],
+        "//conditions:default": [],
+    })
+
+def avr_cexception_copts():
+    return select({
+        "@{avr_toolchain_project}//:avr-config": [
+            "-DCEXCEPTION_NONE=0x00",
+            "-DEXCEPTION_T=uint8_t",
+            "-mmcu=$(MCU)",
+            "-O2",
+        ],
+        "//conditions:default": [],
+    })
+
+def avr_unity_copts():
+    return select({
+        "@{avr_toolchain_project}//:avr-config": [
+            "-mmcu=$(MCU)",
+            "-include 'lib/include/UnityOutput.h'",
+            "-DUNITY_OUTPUT_CHAR(a)=UnityOutput_write(a)",
+            "-DUNITY_OUTPUT_START()=UnityOutput_init(9600)",
+            "-include stddef.h",
+            "-O2",
+        ],
+        "//conditions:default": [],
+    })
+
+def avr_minimal_copts():
+    return select({
+        "@{avr_toolchain_project}//:avr-config": ["-mmcu=$(MCU)"],
+        "//conditions:default": [],
+    })
+
+__CEXCEPTION_COPTS = [
+    "-DCEXCEPTION_NONE=0x00",
+    "-DEXCEPTION_T=uint8_t",
+    "-include stdint.h",
+]
+
+__CODE_SIZE_OPTIMIZATION_COPTS = [
+    "-Os",
+    "-s",
+    "-fno-asynchronous-unwind-tables",
+    "-ffast-math",
+    "-fmerge-all-constants",
+    "-fmerge-all-constants",
+    "-include stdint.h",
+    "-fdata-sections",
+    "-ffunction-sections",
+    "-DCEXCEPTION_T=uint8_t",
+    "-DCEXCEPTION_NONE=0x00",
+    "-fshort-enums",
+    "-fno-jump-tables",
+]
+
+__CODE_SIZE_OPTIMIZATION_LINKOPTS = [
+    "-Xlinker --gc-sections",
+    "-Xlinker --relax",
+] + __CODE_SIZE_OPTIMIZATION_COPTS
+
+def optimizing_for_size_copts():
+    return __CODE_SIZE_OPTIMIZATION_COPTS
+
+def default_embedded_lib(name, hdrs = [], srcs = [], deps = [], copts = [], visibility = []):
+    native.cc_library(
+        name = name,
+        hdrs = hdrs,
+        srcs = srcs,
+        deps = deps + [{cexception}],
+        copts = copts + avr_minimal_copts() +
+                __CODE_SIZE_OPTIMIZATION_COPTS +
+                __CEXCEPTION_COPTS +
+                select({
+                    "@{avr_toolchain_project}//:avr-config": ["-mrelax"],
+                    "//conditions:default": [],
+                }),
+        visibility = visibility,
+    )
+
+def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts = [], visibility = []):
+    native.cc_binary(
+        name = name + "ELF",
+        srcs = srcs,
+        deps = deps + [{cexception}],
+        copts = copts + avr_minimal_copts() +
+                __CODE_SIZE_OPTIMIZATION_COPTS,
+        linkopts = linkopts + avr_minimal_copts() +
+                   __CODE_SIZE_OPTIMIZATION_LINKOPTS +
+                   __CEXCEPTION_COPTS +
+                   select({
+                       "@{avr_toolchain_project}//:avr-config": ["-mrelax"],
+                       "//conditions:default": [],
+                   }),
+        visibility = visibility,
+    )
+    generate_hex(
+        name = name,
+        input = name + "ELF",
+    )
+
+
+"""
+
 _INC_DIR_MARKER_BEGIN = "#include <...>"
 
 # OSX add " (framework directory)" at the end of line, strip it.
 _OSX_FRAMEWORK_SUFFIX = " (framework directory)"
 _OSX_FRAMEWORK_SUFFIX_LEN =  len(_OSX_FRAMEWORK_SUFFIX)
+
 def _cxx_inc_convert(path):
     """Convert path returned by cc -E xc++ in a complete path."""
     path = path.strip()
@@ -186,10 +295,16 @@ def _get_avr_toolchain_def(ctx):
         avr_strip=ctx.which("avr-strip"),
         cxx_include_dirs=_get_cxx_inc_directories(ctx, ctx.which("avr-gcc"))
         ))
+    ctx.file("helpers.bzl", _embedded_lib_helper_macros.format(
+        cexception = ctx.attr.cexception,
+
+    ))
     ctx.file("cc_toolchain_config.bzl", _cc_toolchain_config_template)
 
 _get_avr_toolchain_def_attrs = {
     "avr_gcc": attr.string(),
+    "cexception": attr.string(default="@CException"),
+    "avr_size": attr.string(default="avr-size"),
 }
 
 create_avr_toolchain = repository_rule(

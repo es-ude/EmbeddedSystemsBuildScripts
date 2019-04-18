@@ -1,3 +1,3 @@
 workspace (
-        name = "AVR_Toolchain",
+        name = "EmbeddedSystemBuildScripts",
         )
