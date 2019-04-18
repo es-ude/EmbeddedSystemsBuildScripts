@@ -112,9 +112,9 @@ cc_toolchain_config = rule(
 _embedded_lib_helper_macros = """
 config_setting(
         name = "avr-config",
-        values = {
+        values = {{
                 "cpu": "avr",
-                },
+                }},
         visibility = ["//visibility:public"]
         )
 
