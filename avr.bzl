@@ -120,6 +120,23 @@ cc_toolchain_config = rule(
 
 _embedded_lib_helper_macros = """
 
+def __create_upload_script():
+    native.genrule(
+        name = "internal_upload_script",
+        outs = ["upload.sh"],
+        cmd = "echo 'sudo dfu-programmer atmega32u4 erase; sudo dfu-programmer atmega32u4 flash $$1; sudo dfu-programmer atmega32u4 reset' > $@",
+    )
+
+def upload(name, srcs = []):
+    if not "internal_upload_script" in native.existing_rules():
+        __create_upload_script()
+    native.sh_binary(
+        name = name,
+        srcs = ["upload.sh"],
+        args = ["$(location {{input}})".format(input = srcs[0])],
+        data = [srcs[0]],
+    )
+
 def generate_hex(name, input, testonly = 0):
     native.genrule(
         name = name,
@@ -241,6 +258,10 @@ def default_embedded_binary(name, srcs = [], deps = [], copts = [], linkopts = [
     generate_hex(
         name = name,
         input = name + "ELF",
+    )
+    upload(
+        name = "upload" + name,
+        srcs = [name],
     )
 
 def default_embedded_binaries(main_files, other_srcs = [], deps = [], copts = [], linkopts = [], visibility = []):
