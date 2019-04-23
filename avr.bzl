@@ -125,7 +125,10 @@ def generate_hex(name, input, testonly = 0):
         name = name,
         srcs = [input],
         outs = [name + ".hex"],
-        cmd = "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=$(MCU) --format avr $(SRCS)",  # % (mcu),
+        cmd = select({{
+            "@{avr_toolchain_project}//:avr-config": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=$(MCU) --format avr $(SRCS)",
+            "//conditions:default": "echo 'target only valid for avr platforms'; return 1",
+            }}),
         testonly = testonly,
     )
 
