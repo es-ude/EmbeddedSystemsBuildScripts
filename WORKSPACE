@@ -1,3 +1,3 @@
 workspace (
-        name = "EmbeddedSystemBuildScripts",
+        name = "EmbeddedSystemsBuildScripts",
         )

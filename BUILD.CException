@@ -8,21 +8,17 @@ filegroup(
     srcs = ["lib/CException.h"],
 )
 
-config_setting(
-    name = "avr-config",
-    values = {
-        "cpu": "avr",
-    },
-)
-
 cc_library(
     name = "CException",
     srcs = [":CExceptionSrc"],
     hdrs = [":CExceptionHdr"],
-    copts = select({
-        ":avr-config": ["-mmcu=$(MCU)"],
-        "//conditions:default": []})  + ["-include stdint.h","-DCEXCEPTION_T=uint8_t", "-DCEXCEPTION_NONE=0x00"],
-    strip_include_prefix = "lib/",
+    copts = ["-include stdint.h"],
+    # symbol definitions in defines will be propagated to every target dependent on CException
+    defines = [
+        "CEXCEPTION_T=uint8_t",
+        "CEXCEPTION_NONE=0x00",
+    ],
     linkstatic = True,
+    strip_include_prefix = "lib/",
     visibility = ["//visibility:public"],
 )

@@ -1,3 +1,5 @@
+load("@{name}//:helpers.bzl", "mcu_avr_gcc_flag", "cpu_frequency_flag")
+
 filegroup(
     name = "AVR8DriverSrcFiles",
     srcs = glob([
@@ -43,13 +45,6 @@ filegroup(
     srcs = ["Demos/Device/ClassDriver/VirtualSerial/Config/LUFAConfig.h"],
     )
 
-config_setting(
-    name = "avr-config",
-    values = {
-        "cpu": "avr",
-    },
-)
-
 LUFA_COPTS = [
     "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
     "-pipe",
@@ -78,11 +73,6 @@ cc_library(
 	name = "LUFA_USB",
 	srcs = ["AVR8DriverSrcFiles"],
   hdrs = ["CommonHdrFiles", "Headers", "LufaConfig"],
-  copts = select({
-                  ":avr-config": ["-mmcu=$(MCU)"],
-                  "//conditions:default": []}) + LUFA_COPTS,
-  linkopts = select({
-                  ":avr-config": ["-mmcu=$(MCU)"],
-                  "//conditions:default": []}) + LUFA_COPTS,
+  copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
   visibility = ["//visibility:public"]
   )

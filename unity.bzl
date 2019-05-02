@@ -25,13 +25,15 @@ More Info:
 https://docs.bazel.build/versions/master/be/general.html#genrule
 """
 
-def generate_test_runner(file_name, visibility = None, cexception = True):
+def generate_test_runner(file_name, name = None, visibility = None, cexception = True):
     if cexception:
         cmd = "ruby $(location @Unity//:TestRunnerGenerator) -cexception --enforce_strict_ordering=1 $(SRCS) $(OUTS)"
     else:
         cmd = "ruby $(location @Unity//:TestRunnerGenerator) --enforce_strict_ordering=1 $(SRCS) $(OUTS)"
+    if name == None:
+        name = runner_base_name(file_name)
     native.genrule(
-        name = runner_base_name(file_name),
+        name = name,
         srcs = [file_name],
         outs = [runner_file_name(file_name)],
         cmd = cmd,
@@ -115,7 +117,6 @@ def unity_test(
         copts = [],
         size = "small",
         cexception = True,
-        mocks = [],
         linkopts = [],
         visibility = None,
         additional_srcs = []):
@@ -124,8 +125,6 @@ def unity_test(
         visibility,
         cexception = cexception,
     )
-    for header in mocks:
-        deps = deps + [__get_mock_hdr_base_name(header)]
     native.cc_test(
         name = strip_extension(file_name),
         srcs = [file_name, runner_file_name(file_name)] + additional_srcs,
@@ -148,7 +147,6 @@ def generate_a_unity_test_for_every_file(
         copts = None,
         linkopts = None,
         size = "small",
-        mocks = [],
         visibility = None,
         cexception = True):
     for file in file_list:
@@ -158,7 +156,6 @@ def generate_a_unity_test_for_every_file(
             visibility = visibility,
             copts = copts,
             size = size,
-            mocks = mocks,
             linkopts = linkopts,
             cexception = cexception,
         )

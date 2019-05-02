@@ -1,5 +1,3 @@
-# Description: Build rules for unity testing frameworkgut
-
 filegroup(
     name = "MockGenerator",
     srcs = ["lib/cmock.rb"],
