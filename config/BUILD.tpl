@@ -39,3 +39,10 @@ config_setting(
         "@{name}//constraints:avr",
     ],
 )
+
+config_setting(
+    name = "avr",
+    constraint_values = [
+        "@{name}//constraints:avr",
+    ],
+)

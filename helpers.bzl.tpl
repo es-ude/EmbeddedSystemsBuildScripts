@@ -12,10 +12,11 @@ def generate_hex(name, input, testonly = 0):
         srcs = [input],
         outs = [name + ".hex"],
         cmd = select({
-            "@{avr_toolchain_project}//:avr-config": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=",
+            "@{avr_toolchain_project}//config:avr": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=",
+            "@{avr_toolchain_project}//host_config:enable_avr_size_injection": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); $(AVR_SIZE) --mcu=",
             "//conditions:default": "echo 'target only valid for avr platforms'; return 1",
         }) + mcu() + select({
-            "@{avr_toolchain_project}//:avr-config": " --format avr $(SRCS)",
+            "@{avr_toolchain_project}//config:avr": " --format avr $(SRCS)",
             "//conditions:default": "",
         }),
         testonly = testonly,

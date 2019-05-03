@@ -48,8 +48,14 @@ def _get_cxx_inc_directories(repository_ctx, cc):
     ]
     return ["{}".format(x) for x in paths]
 
-def _get_template_label(target_name):
+def _get_template_label(target_name, package_name=""):
     return "@EmbeddedSystemsBuildScripts//:" + target_name + ".tpl"
+
+def _get_package_template_label(package_name):
+    return _get_template_label(_get_package_target_name(package_name))
+
+def _get_package_target_name(package_name):
+    return package_name + "/BUILD"
 
 def _get_avr_toolchain_def(ctx):
     repo_root = ctx.path(".")
@@ -73,21 +79,32 @@ def _get_avr_toolchain_def(ctx):
         if tools[key] == "":
             tools[key] = "{}".format(ctx.which(key))
 
-    templates = resolve_labels(ctx, [
+    target_package_names = [
+        "host_platforms",
+        "host_constraints",
+        "host_config",
+        "platforms",
+        "constraints",
+        "config",
+    ]
+
+    template_labels = [
         _get_template_label("cc_toolchain_config.bzl"),
         _get_template_label("BUILD.AvrToolchain"),
         _get_template_label("helpers.bzl"),
         _get_template_label("BUILD.LUFA"),
-        _get_template_label("config/BUILD"),
-        _get_template_label("platforms/BUILD"),
-        _get_template_label("constraints/BUILD"),
-    ])
-    target = "constraints/BUILD"
-    ctx.template(target, templates[_get_template_label(target)], {"{name}": ctx.name}, False)
-    target = "platforms/BUILD"
-    ctx.template(target, templates[_get_template_label(target)], {"{name}": ctx.name}, False)
-    target = "config/BUILD"
-    ctx.template(target, templates[_get_template_label(target)], {"{name}": ctx.name}, False)
+    ]
+    package_labels = [_get_package_template_label(x) for x in target_package_names]
+    print(package_labels + template_labels)
+    templates = resolve_labels(ctx, template_labels + package_labels)
+    for package in target_package_names:
+        ctx.template(
+            _get_package_target_name(package),
+            templates[_get_package_template_label(package)],
+            {"{name}": ctx.name},
+            False,
+        )
+
     target = "cc_toolchain_config.bzl"
     ctx.template(target, templates[_get_template_label(target)], {}, False)
     target = "BUILD.LUFA"
