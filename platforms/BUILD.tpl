@@ -5,7 +5,6 @@ _MOTHERBOARD_CONSTRAINTS = [
     "@{name}//constraints:lufa_uart",
     "@{name}//constraints:fpga_not_connected",
     "@{name}//constraints:atmega32u4",
-    "@{name}//constraints:avr",
 ]
 
 _ELASTIC_NODE_CONSTRAINTS = [
@@ -13,15 +12,23 @@ _ELASTIC_NODE_CONSTRAINTS = [
     "@{name}//constraints:hardware_uart",
     "@{name}//constraints:fpga_connected",
     "@{name}//constraints:atmega64",
-    "@{name}//constraints:avr",
 ]
 
 platform(
+    name = "AVR",
+    constraint_values = [
+        "@{name}//constraints:avr",
+    ]
+)
+
+platform(
     name = "Motherboard",
+    parents = [":AVR"],
     constraint_values = _MOTHERBOARD_CONSTRAINTS,
 )
 
 platform(
     name = "ElasticNode",
+    parents = [":AVR"],
     constraint_values = _ELASTIC_NODE_CONSTRAINTS,
 )
