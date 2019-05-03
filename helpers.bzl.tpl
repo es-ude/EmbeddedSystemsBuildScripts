@@ -88,3 +88,48 @@ def default_embedded_binaries(main_files, other_srcs = [], deps = [], copts = []
             linkopts = linkopts,
             visibility = visibility,
         )
+
+
+
+"""
+Use this macro to create a unity library for your platform.
+E.g.:
+
+create_unity_library(
+    name = "Unity",
+    unity_output_start_macro="MyOutputInitFunctionCall(actual_init_value)",
+    unity_output_char_macro="MyOutputCharacterFunctionName",
+    deps = [":LibraryWithHeadersForAboveFunctions"],
+)
+
+unity_test(
+    file_name = "MyTest.c",
+    deps = [":MyLibUnderTest"],
+    unity = [":Unity"],
+)
+
+"""
+def create_unity_library(
+        name = "Unity",
+        srcs = ["@Unity//:UnitySrcs"],
+        hdrs = ["@Unity//:UnityHdrs"],
+        unity_output_start_macro = None,
+        unity_output_char_macro = None,
+        copts = [],
+        defines = [],
+        deps = [],
+        visibility = ["//visibility:private"]):
+    _defines = defines
+    if (unity_output_char_macro != None):
+        _defines.append("UNITY_OUTPUT_CHAR(a)={}(a)".format(unity_output_char_macro))
+    if (unity_output_start_macro != None):
+        _defines.append("UNITY_OUTPUT_START()={}".format(unity_output_start_macro))
+    native.cc_library(
+        name = name,
+        srcs = srcs,
+        hdrs = hdrs,
+        copts = copts,
+        defines = defines,
+        deps = [],
+        visibility = visibility,
+    )

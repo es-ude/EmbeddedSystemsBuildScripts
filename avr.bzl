@@ -95,7 +95,6 @@ def _get_avr_toolchain_def(ctx):
         _get_template_label("BUILD.LUFA"),
     ]
     package_labels = [_get_package_template_label(x) for x in target_package_names]
-    print(package_labels + template_labels)
     templates = resolve_labels(ctx, template_labels + package_labels)
     for package in target_package_names:
         ctx.template(
@@ -154,3 +153,11 @@ create_avr_toolchain = repository_rule(
     implementation = _get_avr_toolchain_def,
     attrs = _get_avr_toolchain_def_attrs,
 )
+
+def avr_toolchain():
+    create_avr_toolchain(
+        name = "AvrToolchain",
+    )
+    native.register_toolchains(
+        "@AvrToolchain//:cc-toolchain-avr",
+    )

@@ -55,6 +55,7 @@ def mock(
         treat_as_void = [],
         verbosity = 2,
         copts = [],
+        unity = ["@Unity//:Unity"],
         linkopts = [],
         includes = [],
         when_ptr = "smart",
@@ -94,7 +95,7 @@ def mock(
         linkopts = linkopts,
         includes = includes,
         deps = [
-            "@Unity//:Unity",
+            unity,
             "@CMock//:CMock",
         ] + deps,
         strip_include_prefix = "mocks/",
@@ -119,6 +120,7 @@ def unity_test(
         cexception = True,
         linkopts = [],
         visibility = None,
+        unity = "@Unity//:Unity",
         additional_srcs = []):
     generate_test_runner(
         file_name,
@@ -129,7 +131,7 @@ def unity_test(
         name = strip_extension(file_name),
         srcs = [file_name, runner_file_name(file_name)] + additional_srcs,
         visibility = visibility,
-        deps = deps + ["@Unity//:Unity"],
+        deps = deps + [unity],
         size = size,
         linkopts = linkopts,
         copts = copts,
