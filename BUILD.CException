@@ -1,11 +1,13 @@
 filegroup(
     name = "CExceptionSrc",
     srcs = ["lib/CException.c"],
+    visibility = ["//visibility:public"],
 )
 
 filegroup(
     name = "CExceptionHdr",
     srcs = ["lib/CException.h"],
+    visibility = ["//visibility:public"],
 )
 
 cc_library(
