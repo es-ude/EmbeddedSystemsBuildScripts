@@ -35,7 +35,7 @@ def generate_test_runner(file_name, name = None, visibility = None, cexception =
     native.genrule(
         name = name,
         srcs = [file_name],
-        outs = [runner_file_name(file_name)],
+        outs = [name + ".c"],
         cmd = cmd,
         tools = [
             "@Unity//:TestRunnerGenerator",

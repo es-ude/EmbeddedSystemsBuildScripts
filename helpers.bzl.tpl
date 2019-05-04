@@ -89,8 +89,6 @@ def default_embedded_binaries(main_files, other_srcs = [], deps = [], copts = []
             visibility = visibility,
         )
 
-
-
 """
 Use this macro to create a unity library for your platform.
 E.g.:
@@ -109,6 +107,7 @@ unity_test(
 )
 
 """
+
 def create_unity_library(
         name = "Unity",
         srcs = ["@Unity//:UnitySrcs"],
@@ -132,4 +131,5 @@ def create_unity_library(
         defines = defines,
         deps = [],
         visibility = visibility,
+        strip_include_prefix = "external/Unity/src/",
     )
