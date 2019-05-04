@@ -30,6 +30,23 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+filegroup(
+    name = "CMockSrcs",
+    srcs = [
+        "src/cmock.c",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "CMockHdrs",
+    srcs = [
+        "src/cmock.h",
+        "src/cmock_internals.h",  # exported headers
+    ],
+    visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "CMock",
     srcs = [
@@ -45,5 +62,5 @@ cc_library(
     ],
     strip_include_prefix = "src",
     visibility = ["//visibility:public"],
-    deps = ["@Unity//:Unity"],
+    deps = ["@Unity"],
 )
