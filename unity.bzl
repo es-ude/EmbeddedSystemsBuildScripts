@@ -55,7 +55,7 @@ def mock(
         treat_as_void = [],
         verbosity = 2,
         copts = [],
-        unity = ["@Unity//:Unity"],
+        unity = "@Unity//:Unity",
         linkopts = [],
         includes = [],
         when_ptr = "smart",

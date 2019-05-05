@@ -92,6 +92,7 @@ def _get_avr_toolchain_def(ctx):
         _get_template_label("cc_toolchain_config.bzl"),
         _get_template_label("BUILD.AvrToolchain"),
         _get_template_label("helpers.bzl"),
+        _get_template_label("platform_constraints.bzl"),
         _get_template_label("BUILD.LUFA"),
     ]
     package_labels = [_get_package_template_label(x) for x in target_package_names]
@@ -109,6 +110,10 @@ def _get_avr_toolchain_def(ctx):
     target = "BUILD.LUFA"
     ctx.template(target, templates[_get_template_label(target)], {
         "{name}": ctx.name,
+    })
+    target = "platform_constraints.bzl"
+    ctx.template(target, templates[_get_template_label(target)], {
+            "{name}": ctx.name,
     })
     ctx.template("BUILD", templates["@EmbeddedSystemsBuildScripts//:BUILD.AvrToolchain.tpl"], {
         "{host_system_name}": host_system_name,

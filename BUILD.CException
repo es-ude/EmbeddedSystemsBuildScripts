@@ -14,7 +14,7 @@ cc_library(
     name = "CException",
     srcs = [":CExceptionSrc"],
     hdrs = [":CExceptionHdr"],
-    copts = ["-include stdint.h"],
+    copts = ["-include", "stdint.h"],
     # symbol definitions in defines will be propagated to every target dependent on CException
     defines = [
         "CEXCEPTION_T=uint8_t",
