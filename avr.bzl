@@ -11,6 +11,27 @@ load(
     "which",
 )
 
+###############
+# Functions in this section are
+# copied and modified from Bazel Authors' unix_cc_configure.bzl
+# https://source.bazel.build/bazel/+/1d205e14e4c069e9199ab71b127c6a6e26a9443b:tools/cpp/unix_cc_configure.bzl
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# TODO: clean this license mess up (is it enough to move the functions to another file including the license?)
+##############
+
 _INC_DIR_MARKER_BEGIN = "#include <...>"
 
 # OSX add " (framework directory)" at the end of line, strip it.
@@ -47,6 +68,43 @@ def _get_cxx_inc_directories(repository_ctx, cc):
         for p in inc_dirs.split("\n")
     ]
     return ["{}".format(x) for x in paths]
+
+def _is_compiler_option_supported(repository_ctx, cc, option):
+    """Checks that `option` is supported by the C compiler. Doesn't %-escape the option."""
+    result = repository_ctx.execute([
+        cc,
+        option,
+        "-o",
+        "/dev/null",
+        "-c",
+        str(repository_ctx.path("tools/cpp/empty.cc")),
+    ])
+    return result.stderr.find(option) == -1
+
+def _is_linker_option_supported(repository_ctx, cc, option, pattern):
+    """Checks that `option` is supported by the C linker. Doesn't %-escape the option."""
+    result = repository_ctx.execute([
+        cc,
+        option,
+        "-o",
+        "/dev/null",
+        str(repository_ctx.path("tools/cpp/empty.cc")),
+    ])
+    return result.stderr.find(pattern) == -1
+
+def _add_compiler_option_if_supported(repository_ctx, cc, option):
+    """Returns `[option]` if supported, `[]` otherwise. Doesn't %-escape the option."""
+    return [option] if _is_compiler_option_supported(repository_ctx, cc, option) else []
+
+def _add_linker_option_if_supported(repository_ctx, cc, option, pattern):
+    """Returns `[option]` if supported, `[]` otherwise. Doesn't %-escape the option."""
+    return [option] if _is_linker_option_supported(repository_ctx, cc, option, pattern) else []
+
+
+#######
+# end of section containing copied functions under Apache License
+#######
+
 
 def _get_template_label(target_name, package_name=""):
     return "@EmbeddedSystemsBuildScripts//:" + target_name + ".tpl"
@@ -106,7 +164,20 @@ def _get_avr_toolchain_def(ctx):
         )
 
     target = "cc_toolchain_config.bzl"
-    ctx.template(target, templates[_get_template_label(target)], {}, False)
+    # below flags are most certainly coding errors
+    flags_to_add = [
+        "-Werror=null-dereference",
+        "-Werror=return-type",
+        "-Werror=incompatible-pointer-types",
+        "-Werror=int-conversion",
+    ]
+    supported_flags = []
+    for flag in flags_to_add:
+        supported_flags.extend(_add_compiler_option_if_supported(ctx, ctx.attr.avr_gcc, flag))
+    ctx.template(target, templates[_get_template_label(target)], {
+        "{warnings_as_errors}": "[{}]".format(""",
+        """.join([ '"' + x + '"' for x in supported_flags])),
+    }, False)
     target = "BUILD.LUFA"
     ctx.template(target, templates[_get_template_label(target)], {
         "{name}": ctx.name,
