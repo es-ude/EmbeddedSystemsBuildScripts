@@ -72,25 +72,13 @@ def _impl(ctx):
         )
         for key in tools
     ]
-    ALL_ACTIONS = [
-            ACTION_NAMES.assemble,
-            ACTION_NAMES.preprocess_assemble,
-            ACTION_NAMES.linkstamp_compile,
-            ACTION_NAMES.c_compile,
-            ACTION_NAMES.cpp_compile,
-            ACTION_NAMES.cpp_header_parsing,
-            ACTION_NAMES.cpp_module_compile,
-            ACTION_NAMES.cpp_module_codegen,
-            ACTION_NAMES.lto_backend,
-            ACTION_NAMES.clif_match,
-        ]
     opt_feature = new_feature("opt", __CODE_SIZE_OPTIMIZATION_COPTS)
     fastbuild_feature = new_feature("fastbuild", ["-O2"])
-
+    c99_feature = new_feature("c99", ["-std=c99"], True)
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
-        toolchain_identifier = "avr-toolchain",
+        toolchain_identifier = ctx.attr.toolchain_identifier,
         host_system_name = ctx.attr.host_system_name,
         target_system_name = ctx.attr.target_system_name,
         target_cpu = ctx.attr.target_cpu,
@@ -100,7 +88,7 @@ def _impl(ctx):
         abi_libc_version = "unknown",
         tool_paths = tool_paths,
         cxx_builtin_include_directories = ctx.attr.cxx_include_dirs,
-        features = [opt_feature, fastbuild_feature],
+        features = [opt_feature, fastbuild_feature, c99_feature],
     )
 
 cc_toolchain_config = rule(
@@ -108,6 +96,7 @@ cc_toolchain_config = rule(
     attrs = {
         "host_system_name": attr.string(),
         "target_system_name": attr.string(default = "avr"),
+        "toolchain_identifier": attr.string(default = "avr-toolchain"),
         "target_cpu": attr.string(default = "avr"),
         "target_libc": attr.string(default = "unknown"),
         "abi_version": attr.string(default = "unknown"),
