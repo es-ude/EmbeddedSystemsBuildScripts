@@ -36,7 +36,6 @@ cc_toolchain(
     name = "avr_cc_toolchain",
     all_files = ":empty",
     compiler_files = ":empty",
-    cpu = "avr",
     dwp_files = ":empty",
     linker_files = ":empty",
     objcopy_files = ":empty",

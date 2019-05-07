@@ -100,13 +100,11 @@ def _add_linker_option_if_supported(repository_ctx, cc, option, pattern):
     """Returns `[option]` if supported, `[]` otherwise. Doesn't %-escape the option."""
     return [option] if _is_linker_option_supported(repository_ctx, cc, option, pattern) else []
 
-
 #######
 # end of section containing copied functions under Apache License
 #######
 
-
-def _get_template_label(target_name, package_name=""):
+def _get_template_label(target_name, package_name = ""):
     return "@EmbeddedSystemsBuildScripts//:" + target_name + ".tpl"
 
 def _get_package_template_label(package_name):
@@ -164,6 +162,7 @@ def _get_avr_toolchain_def(ctx):
         )
 
     target = "cc_toolchain_config.bzl"
+
     # below flags are most certainly coding errors
     flags_to_add = [
         "-Werror=null-dereference",
@@ -176,7 +175,7 @@ def _get_avr_toolchain_def(ctx):
         supported_flags.extend(_add_compiler_option_if_supported(ctx, ctx.attr.avr_gcc, flag))
     ctx.template(target, templates[_get_template_label(target)], {
         "{warnings_as_errors}": "[{}]".format(""",
-        """.join([ '"' + x + '"' for x in supported_flags])),
+        """.join(['"' + x + '"' for x in supported_flags])),
     }, False)
     target = "BUILD.LUFA"
     ctx.template(target, templates[_get_template_label(target)], {
@@ -184,7 +183,7 @@ def _get_avr_toolchain_def(ctx):
     })
     target = "platform_constraints.bzl"
     ctx.template(target, templates[_get_template_label(target)], {
-            "{name}": ctx.name,
+        "{name}": ctx.name,
     })
     ctx.template("BUILD", templates["@EmbeddedSystemsBuildScripts//:BUILD.AvrToolchain.tpl"], {
         "{host_system_name}": host_system_name,
@@ -196,7 +195,7 @@ def _get_avr_toolchain_def(ctx):
         "{avr_nm}": tools["avr-nm"],
         "{avr_objdump}": tools["avr-objdump"],
         "{avr_strip}": tools["avr-strip"],
-        "{cxx_include_dirs}": "{}".format(_get_cxx_inc_directories(ctx, ctx.which("avr-gcc"))),
+        "{cxx_include_dirs}": "{}".format(_get_cxx_inc_directories(ctx, "{}".format(ctx.which("avr-gcc")))),
         "{name}": ctx.name,
     }, False)
     target = "helpers.bzl"
