@@ -1,18 +1,22 @@
-load("@{name}//:helpers.bzl", "mcu_avr_gcc_flag", "cpu_frequency_flag")
+load("@{name}//:helpers.bzl", "cpu_frequency_flag", "mcu_avr_gcc_flag")
+
+package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "AVR8DriverSrcFiles",
-    srcs = glob([
-        "LUFA/Drivers/**/*.c",
-        "LUFA/Drivers/**/*.h",
-        "LUFA/Drivers/USB/Core/AVR8/Template/*.c"],
-                exclude = [
-                    "LUFA/Drivers/**/UC3/**/*.c",
-                    "LUFA/Drivers/**/XMEGA/**/*.c",
-                    "LUFA/Drivers/**/UC3/**/*.h",
-                    "LUFA/Drivers/**/XMEGA/**/*.h",
-                ]),
-
+    srcs = glob(
+        [
+            "LUFA/Drivers/**/*.c",
+            "LUFA/Drivers/**/*.h",
+            "LUFA/Drivers/USB/Core/AVR8/Template/*.c",
+        ],
+        exclude = [
+            "LUFA/Drivers/**/UC3/**/*.c",
+            "LUFA/Drivers/**/XMEGA/**/*.c",
+            "LUFA/Drivers/**/UC3/**/*.h",
+            "LUFA/Drivers/**/XMEGA/**/*.h",
+        ],
+    ),
 )
 
 filegroup(
@@ -22,57 +26,80 @@ filegroup(
         "LUFA/Drivers/Misc/*.h",
         "LUFA/Drivers/Peripheral/*.h",
         "LUFA/Drivers/USB/*.h",
-        "LUFA/Drivers/USB/Core/AVR8/Template/*.c"
+        "LUFA/Drivers/USB/Core/AVR8/Template/*.c",
     ]),
 )
 
 filegroup(
     name = "CommonSrcFiles",
     srcs = glob([
-        "LUFA/Common/**/*.c"
+        "LUFA/Common/**/*.c",
     ]),
 )
 
 filegroup(
     name = "CommonHdrFiles",
     srcs = glob([
-        "LUFA/Common/**/*.h"
+        "LUFA/Common/**/*.h",
     ]),
 )
 
 filegroup(
     name = "LufaConfig",
     srcs = ["Demos/Device/ClassDriver/VirtualSerial/Config/LUFAConfig.h"],
-    )
+)
 
 LUFA_COPTS = [
     "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
-    "-pipe",
-    "-gdwarf-2",
-    "-g2",
-    "-fshort-enums",
-    "-fno-inline-small-functions",
-    "-fpack-struct",
-    "-Wall",
-    "-fno-strict-aliasing",
-    "-funsigned-char",
-    "-funsigned-bitfields",
-    "-ffunction-sections",
     "-DARCH=ARCH_AVR8",
-    "-mrelax",
-    "-fno-jump-tables",
-    "-x c",
-    "-Os",
-    "-Wstrict-prototypes",
-    "-std=gnu99",
     "-DUSE_LUFA_CONFIG_HEADER",
     "-DF_USB=8000000UL",
+    "-isystem external/LUFA",
+    "-Iexternal/LUFA/LUFA/Drivers/",
 ]
 
 cc_library(
-	name = "LUFA_USB",
-	srcs = ["AVR8DriverSrcFiles"],
-  hdrs = ["CommonHdrFiles", "Headers", "LufaConfig"],
-  copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
-  visibility = ["//visibility:public"]
-  )
+    name = "LUFA_USB",
+    srcs = ["AVR8DriverSrcFiles"],
+    hdrs = [
+        "CommonHdrFiles",
+        "Headers",
+        "LufaConfig",
+    ],
+    copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
+    defines = [
+        "ARCH=ARCH_AVR8",
+        "USE_LUFA_CONFIG_HEADER",
+        "F_USB=8000000UL",
+    ],
+)
+
+cc_library(
+    name = "VirtualSerial",
+    srcs = [
+        "AVR8DriverSrcFiles",
+        "Demos/Device/ClassDriver/VirtualSerial/Descriptors.c",
+        "LufaConfig",
+    ],
+    hdrs = [
+        "Demos/Device/ClassDriver/VirtualSerial/Descriptors.h",
+        "Headers",
+    ],
+    copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
+    deps = [":LUFA_Hdrs"],
+)
+
+cc_library(
+    name = "LUFA_Hdrs",
+    hdrs = [
+        ":CommonHdrFiles",
+        ":Headers",
+        ":LufaConfig",
+    ],
+    copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
+    defines = [
+        "ARCH=ARCH_AVR8",
+        "USE_LUFA_CONFIG_HEADER",
+        "F_USB=8000000UL",
+    ],
+)

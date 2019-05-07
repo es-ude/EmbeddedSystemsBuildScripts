@@ -13,6 +13,16 @@ __CODE_SIZE_OPTIMIZATION_COPTS = [
     "-Os",
     "-s",
     "-fno-asynchronous-unwind-tables",
+    "-fno-inline-small-functions",
+    "-fno-strict-aliasing",
+    "-funsigned-char",
+    "-gdwarf-2",
+    "-g2",
+    "-funsigned-bitfields",
+    "-fpack-struct",
+    "-fno-strict-aliasing",
+    "-funsigned-char",
+    "-funsigned-bitfields",
     "-ffast-math",
     "-fmerge-all-constants",
     "-fmerge-all-constants",
@@ -31,37 +41,40 @@ __CEXCEPTION_FLAGS = [
     "-include",
     "stdint.h",
     "-DCEXCEPTION_T=uint8_t",
-    "-DCEXCEPTION_NONE=0x00"
+    "-DCEXCEPTION_NONE=0x00",
 ]
 
 def new_feature(name, flags, enabled = False):
-        ALL_ACTIONS = [
-            ACTION_NAMES.assemble,
-            ACTION_NAMES.preprocess_assemble,
-            ACTION_NAMES.linkstamp_compile,
-            ACTION_NAMES.c_compile,
-            ACTION_NAMES.cpp_compile,
-            ACTION_NAMES.cpp_header_parsing,
-            ACTION_NAMES.cpp_module_compile,
-            ACTION_NAMES.cpp_module_codegen,
-            ACTION_NAMES.lto_backend,
-            ACTION_NAMES.clif_match,
-        ]
-        result = feature(
-            name = name,
-            enabled = enabled,
-            flag_sets = [
-                flag_set(
-                    actions = ALL_ACTIONS,
-                    flag_groups = [
-                        flag_group(
-                            flags = flags,
-                        ),
-                    ],
-                ),
-            ],
-        )
-        return result
+    ALL_ACTIONS = [
+        ACTION_NAMES.assemble,
+        ACTION_NAMES.preprocess_assemble,
+        ACTION_NAMES.linkstamp_compile,
+        ACTION_NAMES.c_compile,
+        ACTION_NAMES.cpp_compile,
+        ACTION_NAMES.cpp_header_parsing,
+        ACTION_NAMES.cpp_module_compile,
+        ACTION_NAMES.cpp_module_codegen,
+        ACTION_NAMES.lto_backend,
+        ACTION_NAMES.clif_match,
+        ACTION_NAMES.cpp_link_executable,
+        #        ACTION_NAMES.cpp_link_static_library,
+        #        ACTION_NAMES.cpp_link_nodeps_dynamic_library,
+    ]
+    result = feature(
+        name = name,
+        enabled = enabled,
+        flag_sets = [
+            flag_set(
+                actions = ALL_ACTIONS,
+                flag_groups = [
+                    flag_group(
+                        flags = flags,
+                    ),
+                ],
+            ),
+        ],
+    )
+    return result
 
 def _impl(ctx):
     tools = ctx.attr.tools
