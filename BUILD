@@ -26,7 +26,7 @@ pkg_tar(
 
 pkg_tar(
 	name = "pkg",
-	deps = ["pkgBuilds", "pkgBzl", "pkgBuid"],
+	deps = ["pkgBuilds", "pkgBzl", "pkgBuild"],
 	extension = "tar.gz",
     mode = "0644"
 )
