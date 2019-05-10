@@ -15,6 +15,13 @@ pkg_tar(
 )
 
 pkg_tar(
+	name = "pkgTpl",
+	srcs = glob(["*.tpl"]),
+	extension = "tar.gz",
+    mode = "0644"
+)
+
+pkg_tar(
     name = "pkgBuild",
     srcs = ["BUILD.tpl"],
     extension = "tar.gz",
@@ -26,7 +33,7 @@ pkg_tar(
 
 pkg_tar(
 	name = "pkg",
-	deps = ["pkgBuilds", "pkgBzl", "pkgBuild"],
+	deps = ["pkgBuilds", "pkgBzl", "pkgBuild", "pkgTpl"],
 	extension = "tar.gz",
     mode = "0644"
 )
