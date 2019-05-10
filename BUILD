@@ -15,8 +15,18 @@ pkg_tar(
 )
 
 pkg_tar(
+    name = "pkgBuild",
+    srcs = ["BUILD.tpl"],
+    extension = "tar.gz",
+    mode = "0644",
+    remap_paths = {
+        "BUILD.tpl": "BUILD",
+    },
+)
+
+pkg_tar(
 	name = "pkg",
-	deps = ["pkgBuilds", "pkgBzl"],
+	deps = ["pkgBuilds", "pkgBzl", "pkgBuid"],
 	extension = "tar.gz",
     mode = "0644"
 )
