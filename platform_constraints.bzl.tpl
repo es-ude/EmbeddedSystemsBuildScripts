@@ -24,7 +24,7 @@ _ELASTIC_NODE_4_CONSTRAINTS = [
     "cpu_8mhz",
     "lufa_uart",
     "fpga_connected",
-    "at90usb1286",
+    "at90usb1287",
 ]
 
 _PLATFORMS = {

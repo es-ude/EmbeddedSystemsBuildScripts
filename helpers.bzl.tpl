@@ -37,7 +37,7 @@ def construct_select_dict_for_mcu_list(mcu_list, prefix = "", suffix = "", retur
         select_dict["@{avr_toolchain_project}//config:" + name] = value
     return select_dict
 
-SUPPORTED_MCUS = ["atmega64", "atmega32u4", "at90usb1286"]
+SUPPORTED_MCUS = ["atmega64", "atmega32u4", "at90usb1287"]
 
 def mcu(return_array = False):
     select_dict = construct_select_dict_for_mcu_list(SUPPORTED_MCUS, return_array = return_array)
