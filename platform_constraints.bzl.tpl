@@ -13,16 +13,24 @@ _MOTHERBOARD_CONSTRAINTS = [
     "atmega32u4",
 ]
 
-_ELASTIC_NODE_CONSTRAINTS = [
+_ELASTIC_NODE_3_CONSTRAINTS = [
     "cpu_12mhz",
     "hardware_uart",
     "fpga_connected",
     "atmega64",
 ]
 
+_ELASTIC_NODE_4_CONSTRAINTS = [
+    "cpu_8mhz",
+    "lufa_uart",
+    "fpga_connected",
+    "at90usb1286",
+]
+
 _PLATFORMS = {
     "Motherboard": _MOTHERBOARD_CONSTRAINTS,
-    "ElasticNode": _ELASTIC_NODE_CONSTRAINTS,
+    "ElasticNode3": _ELASTIC_NODE_3_CONSTRAINTS,
+    "ElasticNode4": _ELASTIC_NODE_4_CONSTRAINTS,
 }
 
 def platform_constraint_list(platform_name):

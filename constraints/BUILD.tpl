@@ -68,6 +68,11 @@ constraint_value(
 )
 
 constraint_value(
+    name = "at90usb1286",
+    constraint_setting = ":mcu",
+)
+
+constraint_value(
     name = "none",
     constraint_setting = ":mcu",
 )
