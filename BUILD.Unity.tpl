@@ -78,6 +78,7 @@ cc_library(
     copts = ["-DUNITY_INCLUDE_CONFIG_H"],
     deps = [":DefaultUnityConfigForEmbedded"],
     visibility = ["//visibility:public"],
+    strip_include_prefix = "src",
 )
 
 cc_library(
