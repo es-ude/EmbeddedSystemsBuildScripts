@@ -87,7 +87,7 @@ def _impl(ctx):
     ]
     opt_feature = new_feature("opt", __CODE_SIZE_OPTIMIZATION_COPTS)
     fastbuild_feature = new_feature("fastbuild", ["-O2"])
-    c99_feature = new_feature("c99", ["-std=c99"], True)
+    c99_feature = new_feature("gnu99", ["-std=gnu99"], True)
     convert_warnings_to_errors = new_feature("warnings_as_errors", {warnings_as_errors})
 
     return cc_common.create_cc_toolchain_config_info(
