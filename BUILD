@@ -11,6 +11,7 @@ pkg_tar(
         "host_platforms/*",
         "*.bzl",
         "BUILD*",
+        "*.tpl",
     ]),
     extension = "tar.gz",
     mode = "0644",
