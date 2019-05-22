@@ -79,7 +79,6 @@ cc_library(
     deps = [":DefaultUnityConfigForEmbedded"],
     visibility = ["//visibility:public"],
     strip_include_prefix = "src",
-
 )
 
 cc_library(
