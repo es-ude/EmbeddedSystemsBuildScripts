@@ -1,4 +1,4 @@
-# Description: Build rules for unity testing frameworkgut
+load("@{name}//:helpers.bzl", "mcu_avr_gcc_flag")
 
 filegroup(
   name = "TestRunnerGenerator",
@@ -65,8 +65,7 @@ cc_library (
         name = "Unity",
     srcs = [":UnitySrcs"],
     hdrs = [":UnityHdrs"],
-        copts = ["-DUNITY_INCLUDE_DOUBLE",
-            ],
+        copts = ["-DUNITY_INCLUDE_DOUBLE"] + mcu_avr_gcc_flag(),
         strip_include_prefix = "src",
         visibility = ["//visibility:public"],
         )
@@ -75,7 +74,7 @@ cc_library(
     name = "UnityForEmbedded",
     srcs = [":UnitySrcs"],
     hdrs = [":UnityHdrs"],
-    copts = ["-DUNITY_INCLUDE_CONFIG_H"],
+    copts = ["-DUNITY_INCLUDE_CONFIG_H"] + mcu_avr_gcc_flag(),
     deps = [":DefaultUnityConfigForEmbedded"],
     visibility = ["//visibility:public"],
     strip_include_prefix = "src",

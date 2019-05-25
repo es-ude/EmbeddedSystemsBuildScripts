@@ -144,14 +144,18 @@ def _get_avr_toolchain_def(ctx):
         "config",
     ]
 
-    template_labels = [
-        _get_template_label("cc_toolchain_config.bzl"),
-        _get_template_label("BUILD.AvrToolchain"),
-        _get_template_label("helpers.bzl"),
-        _get_template_label("platform_constraints.bzl"),
-        _get_template_label("BUILD.LUFA"),
-        _get_template_label("BUILD.Unity"),
+    simple_templates = [
+        "BUILD.LUFA",
+        "BUILD.Unity",
+        "BUILD.CException",
+        "platform_constraints.bzl",
     ]
+
+    template_labels = [_get_template_label(x) for x in [
+        "cc_toolchain_config.bzl",
+        "BUILD.AvrToolchain",
+        "helpers.bzl",
+    ] + simple_templates]
     package_labels = [_get_package_template_label(x) for x in target_package_names]
     templates = resolve_labels(ctx, template_labels + package_labels)
     for package in target_package_names:
@@ -178,7 +182,7 @@ def _get_avr_toolchain_def(ctx):
         "{warnings_as_errors}": "[{}]".format(""",
         """.join(['"' + x + '"' for x in supported_flags])),
     }, False)
-    for target_name in ["BUILD.Unity", "BUILD.LUFA", "platform_constraints.bzl"]:
+    for target_name in simple_templates:
         ctx.template(target_name, templates[_get_template_label(target_name)], {
             "{name}": ctx.name,
         })
