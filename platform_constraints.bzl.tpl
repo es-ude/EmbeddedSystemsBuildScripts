@@ -27,8 +27,22 @@ _ELASTIC_NODE_4_CONSTRAINTS = [
     "at90usb1287",
 ]
 
+_ARDUINO_UNO_CONSTRAINTS = [
+    "cpu_16mhz",
+    "hardware_uart",
+    "atmega328p",
+]
+
+_ARDUINO_MEGA_CONSTRAINTS = [
+    "cpu_16mhz",
+    "hardware_uart",
+    "atmega2560",
+]
+
 _PLATFORMS = {
     "Motherboard": _MOTHERBOARD_CONSTRAINTS,
+    "ArduinoUno": _ARDUINO_UNO_CONSTRAINTS,
+    "ArduinoMega2560": _ARDUINO_MEGA_CONSTRAINTS,
     "ElasticNode3": _ELASTIC_NODE_3_CONSTRAINTS,
     "ElasticNode4": _ELASTIC_NODE_4_CONSTRAINTS,
 }

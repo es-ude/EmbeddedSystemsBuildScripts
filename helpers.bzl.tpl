@@ -38,7 +38,7 @@ def construct_select_dict_for_mcu_list(mcu_list, prefix = "", suffix = "", retur
         select_dict["@{avr_toolchain_project}//config:" + name] = value
     return select_dict
 
-SUPPORTED_MCUS = ["atmega64", "atmega32u4", "at90usb1287"]
+SUPPORTED_MCUS = ["atmega64", "atmega32u4", "at90usb1287", "atmega328p", "atmega2560"]
 
 def mcu(return_array = False):
     select_dict = construct_select_dict_for_mcu_list(SUPPORTED_MCUS, return_array = return_array)
@@ -56,6 +56,7 @@ def cpu_frequency_flag():
     select_dict = {
         "@{avr_toolchain_project}//config:cpu_8mhz": ["-DF_CPU=8000000UL"],
         "@{avr_toolchain_project}//config:cpu_12mhz": ["-DF_CPU=12000000UL"],
+        "@{avr_toolchain_project}//config:cpu_16mhz": ["-DF_CPU=16000000UL"],
         "//conditions:default": [],
     }
     return select(select_dict)
