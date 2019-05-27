@@ -53,6 +53,11 @@ constraint_value(
     constraint_setting = ":cpu_frequency",
 )
 
+constraint_value(
+    name = "cpu_16mhz",
+    constraint_setting = ":cpu_frequency",
+)
+
 constraint_setting(name = "uart_baud_rate")
 
 constraint_value(
@@ -84,6 +89,11 @@ constraint_value(
 
 constraint_value(
     name = "atmega328p",
+    constraint_setting = ":mcu",
+)
+
+constraint_value(
+    name = "atmega2560",
     constraint_setting = ":mcu",
 )
 
