@@ -6,10 +6,11 @@ def upload(name, srcs = [], upload_script = "@{avr_toolchain_project}//:dfu_uplo
         data = [srcs[0]],
     )
 
-def generate_hex(name, input, testonly = 0):
+def generate_hex(name, input, testonly = 0, tags=[]):
     native.genrule(
         name = name,
         srcs = [input],
+        tags = tags,
         outs = [name + ".hex"],
         cmd = select({
             "@{avr_toolchain_project}//config:avr": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=",
@@ -59,12 +60,13 @@ def cpu_frequency_flag():
     }
     return select(select_dict)
 
-def default_embedded_binary(name, srcs = [], deps = [], defines = [], copts = [], linkopts = [], visibility = [], uploader = "@{avr_toolchain_project}//:dfu_upload_script"):
+def default_embedded_binary(name, srcs = [], deps = [], defines = [], copts = [], linkopts = [], visibility = [], uploader = "@{avr_toolchain_project}//:dfu_upload_script", tags=[]):
     native.cc_binary(
         name = name + "ELF",
         srcs = srcs,
         copts = copts,
         linkopts = linkopts,
+        tags = tags,
         defines = defines,
         deps = deps,
         visibility = visibility,
@@ -79,12 +81,13 @@ def default_embedded_binary(name, srcs = [], deps = [], defines = [], copts = []
         upload_script = uploader
     )
 
-def default_embedded_binaries(main_files, other_srcs = [], deps = [], copts = [], linkopts = [], visibility = []):
+def default_embedded_binaries(main_files, other_srcs = [], deps = [], copts = [], linkopts = [], visibility = [], tags =[]):
     for file in main_files:
         default_embedded_binary(
             name = file.rpartition(".")[0].rpartition("/")[2],
             srcs = other_srcs + [file],
             deps = deps,
+            tags = [],
             copts = copts,
             linkopts = linkopts,
             visibility = visibility,
