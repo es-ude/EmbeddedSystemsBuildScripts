@@ -76,6 +76,7 @@ def default_embedded_binary(name, srcs = [], deps = [], defines = [], copts = []
     upload(
         name = "upload" + name,
         srcs = [name],
+        upload_script = uploader
     )
 
 def default_embedded_binaries(main_files, other_srcs = [], deps = [], copts = [], linkopts = [], visibility = []):
