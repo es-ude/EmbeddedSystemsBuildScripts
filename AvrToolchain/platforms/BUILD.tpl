@@ -59,3 +59,21 @@ platform(
     parents = [":avr_common"],
 )
 
+platform(
+    name = "ArduinoUno",
+    constraint_values = [
+        "@AvrToolchain//platforms/cpu_frequency:16mhz",
+        "@AvrToolchain//platforms/misc:hardware_uart",
+        "@AvrToolchain//platforms/mcu:atmega328p",
+    ]
+)
+
+platform(
+    name = "ArduinoMega",
+    constraint_values = [
+        "@AvrToolchain//platforms/cpu_frequency:16mhz",
+        "@AvrToolchain//platforms/misc:hardware_uart",
+        "@AvrToolchain//platforms/mcu:atmega2560",
+    ]
+)
+
