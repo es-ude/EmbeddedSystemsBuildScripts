@@ -1,6 +1,3 @@
-# Description: Build rules for unity testing frameworkgut
-
-
 filegroup(
   name = "TestRunnerGenerator",
   srcs = ["auto/generate_test_runner.rb"],
@@ -39,17 +36,47 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+genrule(
+    name = "UnityConfigForEmbeddedHdr",
+    outs = ["unity_config.h"],
+    cmd = """cat <<EOF > $@
+#ifndef UNITY_CONFIG_H
+#define UNITY_CONFIG_H
+
+void printChar(char a);
+
+void setUpPrint(void);
+
+#define UNITY_OUTPUT_CHAR(a) printChar(a)
+#define UNITY_OUTPUT_START() setUpPrint()
+
+#endif
+EOF"""
+)
+
+cc_library(
+    name = "DefaultUnityConfigForEmbedded",
+    hdrs = [":UnityConfigForEmbeddedHdr"]
+)
 
 cc_library (
         name = "Unity",
-        srcs = ["src/unity.c",  "src/unity_internals.h"],
-        hdrs = ["src/unity.h", "src/unity_internals.h"], # exported headers
-        copts = ["-DUNITY_INCLUDE_DOUBLE",
-                 "-funsigned-char",
-            ],
+    srcs = [":UnitySrcs"],
+    hdrs = [":UnityHdrs"],
+        copts = ["-DUNITY_INCLUDE_DOUBLE"],
         strip_include_prefix = "src",
         visibility = ["//visibility:public"],
         )
+
+cc_library(
+    name = "UnityForEmbedded",
+    srcs = [":UnitySrcs"],
+    hdrs = [":UnityHdrs"],
+    copts = ["-DUNITY_INCLUDE_CONFIG_H"],
+    deps = [":DefaultUnityConfigForEmbedded"],
+    visibility = ["//visibility:public"],
+    strip_include_prefix = "src",
+)
 
 cc_library(
     name = "UnityFixtures",

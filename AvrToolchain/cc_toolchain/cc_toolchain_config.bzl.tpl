@@ -6,6 +6,7 @@ load(
     "flag_set",
     "tool_path",
     "with_feature_set",
+    "make_variable",
 )
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 
@@ -57,8 +58,6 @@ def new_feature(name, flags, enabled = False):
         ACTION_NAMES.lto_backend,
         ACTION_NAMES.clif_match,
         ACTION_NAMES.cpp_link_executable,
-        #        ACTION_NAMES.cpp_link_static_library,
-        #        ACTION_NAMES.cpp_link_nodeps_dynamic_library,
     ]
     result = feature(
         name = name,
@@ -88,9 +87,11 @@ def _impl(ctx):
     opt_feature = new_feature("opt", __CODE_SIZE_OPTIMIZATION_COPTS)
     fastbuild_feature = new_feature("fastbuild", ["-O2"])
     c99_feature = new_feature("gnu99", ["-std=gnu99"], True)
-    convert_warnings_to_errors = new_feature("warnings_as_errors", {warnings_as_errors})
-
-    return cc_common.create_cc_toolchain_config_info(
+    convert_warnings_to_errors = new_feature("treat_warnings_as_errors", @warnings_as_errors@)
+    features = [opt_feature, fastbuild_feature, c99_feature, convert_warnings_to_errors]
+    if ctx.attr.mcu != "none":
+        features.append(new_feature("mcu", ["-mmcu=" + ctx.attr.mcu], True))
+    return [cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         toolchain_identifier = ctx.attr.toolchain_identifier,
         host_system_name = ctx.attr.host_system_name,
@@ -102,14 +103,18 @@ def _impl(ctx):
         abi_libc_version = "unknown",
         tool_paths = tool_paths,
         cxx_builtin_include_directories = ctx.attr.cxx_include_dirs,
-        features = [opt_feature, fastbuild_feature, c99_feature, convert_warnings_to_errors],
-    )
+        features = features,
+        make_variables = [make_variable("MCU", ctx.attr.mcu)]
+    ),
+    platform_common.TemplateVariableInfo({'MCU': ctx.attr.mcu})
+    ]
 
 cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
         "host_system_name": attr.string(),
         "target_system_name": attr.string(default = "avr"),
+        "mcu": attr.string(default = "none"),
         "toolchain_identifier": attr.string(default = "avr-toolchain"),
         "target_cpu": attr.string(default = "avr"),
         "target_libc": attr.string(default = "unknown"),
@@ -117,5 +122,5 @@ cc_toolchain_config = rule(
         "tools": attr.string_dict(),
         "cxx_include_dirs": attr.string_list(),
     },
-    provides = [CcToolchainConfigInfo],
+    provides = [CcToolchainConfigInfo, platform_common.TemplateVariableInfo],
 )
