@@ -8,12 +8,11 @@ default_embedded_binary(
 )
 
 
-
 platform(
     name = "MyPlatform",
     constraint_values = [
         "@AvrToolchain//platforms/mcu:atmega328p",
-        "@AvrToolchain//platforms:avr",
         "@AvrToolchain//platforms/cpu_frequency:8mhz"
-    ]
+    ],
+    parents = ["@AvrToolchain//platforms:avr_common"]
 )

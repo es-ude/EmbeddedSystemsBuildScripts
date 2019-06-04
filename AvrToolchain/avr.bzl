@@ -98,3 +98,4 @@ def avr_toolchain():
         native.register_toolchains(
             "@AvrToolchain//cc_toolchain:cc-toolchain-avr-" + mcu,
         )
+

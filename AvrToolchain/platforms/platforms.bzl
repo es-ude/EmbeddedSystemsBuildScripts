@@ -35,5 +35,17 @@ def write_constraints(repository_ctx, paths):
         ["dfu_programmer", "avrdude"],
         "platforms/uploader/BUILD",
     )
+    _write_constraints(
+        repository_ctx,
+        "board_id",
+        [
+            "motherboard",
+            "elastic_node_v3",
+            "elastic_node_v4",
+            "arduino_uno",
+            "arduino_mega",
+        ],
+        "platforms/board_id/BUILD",
+    )
     repository_ctx.template("platforms/misc/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/misc/BUILD.tpl"])
     repository_ctx.template("platforms/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/BUILD.tpl"])

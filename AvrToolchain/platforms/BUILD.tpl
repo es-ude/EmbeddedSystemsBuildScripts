@@ -33,6 +33,7 @@ platform(
         "@AvrToolchain//platforms/misc:lis2de",
         "@AvrToolchain//platforms/misc:has_mrf",
         "@AvrToolchain//platforms/cpu_frequency:8mhz",
+        "@AvrToolchain//platforms/board_id:motherboard",
     ],
     parents = [":avr_common"]
 )
@@ -44,6 +45,7 @@ platform(
         "@AvrToolchain//platforms/misc:hardware_uart",
         "@AvrToolchain//platforms/misc:has_mrf",
         "@AvrToolchain//platforms/cpu_frequency:12mhz",
+        "@AvrToolchain//platforms/board_id:elastic_node_v3"
     ],
     parents = [":avr_common"]
 )
@@ -55,6 +57,7 @@ platform(
             "@AvrToolchain//platforms/misc:lufa_uart",
             "@AvrToolchain//platforms/misc:fpga_connected",
             "@AvrToolchain//platforms/mcu:at90usb1287",
+            "@AvrToolchain//platforms/board_id:elastic_node_v4",
     ],
     parents = [":avr_common"],
 )
@@ -65,6 +68,7 @@ platform(
         "@AvrToolchain//platforms/cpu_frequency:16mhz",
         "@AvrToolchain//platforms/misc:hardware_uart",
         "@AvrToolchain//platforms/mcu:atmega328p",
+        "@AvrToolchain//platforms/board_id:arduino_uno"
     ]
 )
 
@@ -74,6 +78,9 @@ platform(
         "@AvrToolchain//platforms/cpu_frequency:16mhz",
         "@AvrToolchain//platforms/misc:hardware_uart",
         "@AvrToolchain//platforms/mcu:atmega2560",
+        "@AvrToolchain//platforms/board_id:arduino_mega_config",
     ]
 )
+
+
 
