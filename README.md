@@ -25,7 +25,7 @@ load("@EmbeddedSystemsBuildScripts//:external_dependencies.bzl", "load_third_par
 load_third_party_deps()
 ```
 
-###AvrToolchain
+### AvrToolchain
 To be able to build for avr microcontrollers you add the following lines to your `WORKSPACE`:
 ```python
 load("@EmbeddedSystemsBuildScripts//:external_dependencies.bzl", "avr_toolchain")
