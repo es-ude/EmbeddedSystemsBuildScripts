@@ -1,3 +1,5 @@
 .vscode/
 .clwb/
 bazel-*
+docs/_build/
+docs/xml
