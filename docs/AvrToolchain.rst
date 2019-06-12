@@ -28,9 +28,9 @@ to depend on the current master branch.
 Now you can call the repository rule, that will create the necessary avr toolchains
 and platforms. Add::
 
-  load("@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl", "create_avr")
+  load("@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl", "avr_toolchain")
   
-  create_avr()
+  avr_toolchain()
 
 to the ``WORKSPACE`` file. The ``http_archive`` rule has to be called before loading
 the ``create_avr()`` function.
