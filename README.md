@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/embeddedsystemsbuildscripts/badge/?version=latest)](https://embeddedsystemsbuildscripts.readthedocs.io/en/latest/?badge=latest)
+
 Embedded Systems Build Scripts
 ------------------------------
 
