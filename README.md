@@ -12,7 +12,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
     name = "EmbeddedSystemsBuildScripts",
     strip_prefix = "EmbeddedSystemsBuildScripts-<version>",
-    urls = ["https://github.com/es-ude/EmbeddedSystemsBuildScripts/archive/v<verion>.tar.gz"]
+    urls = ["https://github.com/es-ude/EmbeddedSystemsBuildScripts/archive/v<version>.tar.gz"]
 )
 ```
 Where `<version>` is the version number of the scripts, that you want to use.
