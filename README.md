@@ -11,11 +11,11 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "EmbeddedSystemsBuildScripts",
-    type = "tar.gz",
-    urls = ["http://artifactory.es.uni-due.de:8081/artifactory/libs-release-local/FKS/embedded-systems-build-scripts/<version>/embedded-systems-build-scripts.tar.gz"]
+    strip_prefix = "EmbeddedSystemsBuildScripts-<version>",
+    urls = ["https://github.com/es-ude/EmbeddedSystemsBuildScripts/archive/v<version>.tar.gz"]
 )
 ```
-Where `<version>` is the version of the scripts, that you want to use.
+Where `<version>` is the version number of the scripts, that you want to use.
 
 ### Third Party Dependencies
 For unit testing we make use of the [Unity](https://github.com/ThrowTheSwitch/Unity) testing framework as well as [CMock](https://github.com/ThrowTheSwitch/CMock). Additionally most of our software uses [CException](https://github.com/ThrowTheSwitch/CException) instead of returning error codes. To realise virtual serial ports via usb, [LUFA](http://www.fourwalledcubicle.com/LUFA.php) is used.
