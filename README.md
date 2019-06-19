@@ -4,7 +4,9 @@ Embedded Systems Build Scripts
 ------------------------------
 
 This is a collection of build scripts providing unit testing, cross compilation for avr platforms as well as definitions of target platforms developed by the department.
-It is tested with bazel 0.26.
+It is tested with bazel 0.26 on MacOS and Linux.
+Please note that we currently have issues with Windows, so we recommend
+using one of the former systems.
 
 To use the scripts add these lines to your `WORKSPACE` file
 
