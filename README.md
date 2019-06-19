@@ -19,6 +19,8 @@ http_archive(
 ```
 Where `<version>` is the version number of the scripts, that you want to use.
 
+For more detailed documentation see [docs](https://embeddedsystemsbuildscripts.readthedocs.io/en/latest/)
+
 ### AvrToolchain
 To be able to build for avr microcontrollers you add the following lines to your `WORKSPACE`:
 ```python
