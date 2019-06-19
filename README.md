@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/embeddedsystemsbuildscripts/badge/?version=latest)](https://embeddedsystemsbuildscripts.readthedocs.io/en/latest/?badge=latest)
+
 Embedded Systems Build Scripts
 ------------------------------
 
@@ -16,15 +18,6 @@ http_archive(
 )
 ```
 Where `<version>` is the version number of the scripts, that you want to use.
-
-### Third Party Dependencies
-For unit testing we make use of the [Unity](https://github.com/ThrowTheSwitch/Unity) testing framework as well as [CMock](https://github.com/ThrowTheSwitch/CMock). Additionally most of our software uses [CException](https://github.com/ThrowTheSwitch/CException) instead of returning error codes. To realise virtual serial ports via usb, [LUFA](http://www.fourwalledcubicle.com/LUFA.php) is used.
-All these dependencies are automatically pulled by the build tool by adding the following lines to your `WORKSPACE`:
-```python
-load("@EmbeddedSystemsBuildScripts//:external_dependencies.bzl", "load_third_party_deps")
-
-load_third_party_deps()
-```
 
 ### AvrToolchain
 To be able to build for avr microcontrollers you add the following lines to your `WORKSPACE`:
