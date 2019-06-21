@@ -80,7 +80,7 @@ platform(
         "@AvrToolchain//platforms/misc:hardware_uart",
         "@AvrToolchain//platforms/mcu:atmega2560",
         "@AvrToolchain//platforms/board_id:arduino_mega_config",
-    ]
+    ],
     parents = [":avr_common"],
 )
 
