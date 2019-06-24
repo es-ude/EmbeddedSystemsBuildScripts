@@ -12,8 +12,8 @@ load(
 )
 load(
     "//AvrToolchain:cc_toolchain/cc_toolchain.bzl",
-    "create_cc_toolchain_package",
     "avr_tools",
+    "create_cc_toolchain_package",
 )
 load(
     "//AvrToolchain:platforms/platforms.bzl",
@@ -27,8 +27,9 @@ load(
 def _avr_toolchain_impl(repository_ctx):
     prefix = "@EmbeddedSystemsBuildScripts//AvrToolchain:"
     tools = avr_tools(repository_ctx)
-    paths = resolve_labels(repository_ctx, [ prefix + label for label in
-        [
+    paths = resolve_labels(
+        repository_ctx,
+        [prefix + label for label in [
             "cc_toolchain/cc_toolchain_config.bzl.tpl",
             "platforms/cpu_frequency/cpu_frequency.bzl.tpl",
             "platforms/misc/BUILD.tpl",
@@ -38,7 +39,7 @@ def _avr_toolchain_impl(repository_ctx):
             "platforms/platform_list.bzl",
             "platforms/mcu/mcu.bzl",
             "BUILD.tpl",
-        ]]
+        ]],
     )
     write_constraints(repository_ctx, paths)
     create_cc_toolchain_package(repository_ctx, paths)
@@ -48,21 +49,21 @@ def _avr_toolchain_impl(repository_ctx):
         substitutions = {
             "{avr_objcopy}": tools["objcopy"],
             "{avr_size}": tools["size"],
-        }
-        )
+        },
+    )
     repository_ctx.file("BUILD")
     repository_ctx.template("host_config/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:host_config/BUILD.tpl"])
     repository_ctx.template(
         "platforms/platform_list.bzl",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/platform_list.bzl"]
+        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/platform_list.bzl"],
     )
     repository_ctx.template(
         "platforms/mcu/mcu.bzl",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/mcu/mcu.bzl"]
+        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/mcu/mcu.bzl"],
     )
     repository_ctx.template(
         "BUILD",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:BUILD.tpl"]
+        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:BUILD.tpl"],
     )
 
 _get_avr_toolchain_def_attrs = {
@@ -77,7 +78,6 @@ _get_avr_toolchain_def_attrs = {
     "strip_tool": attr.string(),
     "objcopy_tool": attr.string(),
     "mcu_list": attr.string_list(mandatory = True),
-    "baud_rates": attr.string_list(default = []),
 }
 
 create_avr_toolchain = repository_rule(
@@ -86,16 +86,11 @@ create_avr_toolchain = repository_rule(
 )
 
 def avr_toolchain():
-    baud_rates = [
-        "9600",
-    ]
     create_avr_toolchain(
         name = "AvrToolchain",
         mcu_list = platforms,
-        baud_rates = baud_rates,
     )
     for mcu in platforms:
         native.register_toolchains(
             "@AvrToolchain//cc_toolchain:cc-toolchain-avr-" + mcu,
         )
-
