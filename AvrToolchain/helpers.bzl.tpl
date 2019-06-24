@@ -38,6 +38,7 @@ def default_embedded_binary(name, uploader = "@AvrToolchain//:dfu_upload_script"
     upload(
         name = "_" + name + "Upload",
         srcs = [name],
+        upload_script = uplaoder,
     )
 
 def default_embedded_binaries(main_files, other_srcs = [], **kwargs):
