@@ -1,9 +1,5 @@
-.idea/
 .vscode/
 .clwb/
 bazel-*
-<<<<<<< HEAD
-=======
 docs/_build/
 docs/xml
->>>>>>> 35853b8529a5b07e3de45531f4129de3cc0515fe
