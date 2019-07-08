@@ -27,9 +27,9 @@ https://docs.bazel.build/versions/master/be/general.html#genrule
 
 def generate_test_runner(file_name, name = None, visibility = None, cexception = True):
     if cexception:
-        cmd = "ruby $(location @Unity//:TestRunnerGenerator) -cexception --enforce_strict_ordering=1 $(SRCS) $(OUTS)"
+        cmd = "$(rootpath @ruby//:bin/ruby) $(location @Unity//:TestRunnerGenerator) -cexception --enforce_strict_ordering=1 $(SRCS) $(OUTS)"
     else:
-        cmd = "ruby $(location @Unity//:TestRunnerGenerator) --enforce_strict_ordering=1 $(SRCS) $(OUTS)"
+        cmd = "$(rootpath @ruby//:bin/ruby) $(location @Unity//:TestRunnerGenerator) --enforce_strict_ordering=1 $(SRCS) $(OUTS)"
     if name == None:
         name = runner_base_name(file_name)
     native.genrule(
@@ -40,6 +40,9 @@ def generate_test_runner(file_name, name = None, visibility = None, cexception =
         tools = [
             "@Unity//:TestRunnerGenerator",
             "@Unity//:HelperScripts",
+            "@ruby//:bin/ruby",
+            "@ruby//:lib",
+            #            "@ruby//:include",
         ],
         visibility = visibility,
     )
@@ -84,6 +87,9 @@ def mock(
             "@Unity//:HelperScripts",
             "@CMock//:HelperScripts",
             "@CMock//:MockGenerator",
+            "@ruby//:bin",
+            "@ruby//:lib",
+            "@ruby//:include",
         ],
     )
     mock_library_files = __add_header_to_srcs_if_possible([mock_srcs], srcs[0])
@@ -220,7 +226,7 @@ def __file_comes_from_current_package(file_name):
     return native.package_name() == Label(file_name).package
 
 def __build_mock_generator_cmd(sub_dir, plugin_argument, other_arguments):
-    cmd = "UNITY_DIR=external/Unity/ ruby $(location @CMock//:MockGenerator) --mock_path=$(@D)/mocks/"
+    cmd = "UNITY_DIR=external/Unity/ $(rootpath @ruby//:bin/ruby) $(location @CMock//:MockGenerator) --mock_path=$(@D)/mocks/"
     if not sub_dir == "":
         cmd = cmd + " --subdir=" + sub_dir
     cmd = cmd + plugin_argument + other_arguments + " $(SRCS)"

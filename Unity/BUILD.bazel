@@ -7,3 +7,5 @@ pkg_tar(
     package_dir = "Unity",
     visibility = ["//visibility:public"],
 )
+
+load("@io_tweag_rules_nixpkgs//nixpkgs:nixpkgs.bzl", "nixpkgs_package")

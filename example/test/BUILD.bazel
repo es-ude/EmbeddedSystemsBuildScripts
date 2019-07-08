@@ -1,0 +1,6 @@
+load("//Unity:unity.bzl", "unity_test")
+
+unity_test(
+    file_name = "test.c",
+    deps = ["@CException"],
+)

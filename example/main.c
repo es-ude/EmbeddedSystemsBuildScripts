@@ -1,4 +1,10 @@
-//
-// Created by lukas on 6/2/19.
-//
+#include <avr/io.h>
 
+int
+main(void)
+{
+    DDRD = (1 << 5);
+    PORTD = (1 << 5);
+    while(1)
+    {}
+}

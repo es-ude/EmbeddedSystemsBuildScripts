@@ -83,6 +83,14 @@ _get_avr_toolchain_def_attrs = {
 create_avr_toolchain = repository_rule(
     implementation = _avr_toolchain_impl,
     attrs = _get_avr_toolchain_def_attrs,
+    doc = """
+Creates an avr toolchain repository. The repository
+will contain toolchain definitions and constraints
+to allow compilation for avr platforms using the avr-gcc
+compiler. The compiler itself has to be provided by the
+operating system and discoverable through the PATH variable.
+Additionally avr-binutils and avr-libc should be installed.
+    """,
 )
 
 def avr_toolchain():
