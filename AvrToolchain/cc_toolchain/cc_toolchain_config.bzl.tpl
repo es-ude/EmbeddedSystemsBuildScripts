@@ -100,14 +100,16 @@ def _impl(ctx):
     opt_feature = new_feature("opt", __CODE_SIZE_OPTIMIZATION_COPTS)
     fastbuild_feature = new_feature("fastbuild", ["-O2"])
     c99_feature = new_feature("gnu99", ["-std=gnu99"], True)
+    avr_gcc_include = "/".join(ctx.expand_location("$(rootpaths {})".format(ctx.attr._data[0].label), [ctx.attr._data[0]]).split(" ")[0].split("/")[:-2])
+    print(avr_gcc_include)
     nostdinc_feature = new_feature("nostdinc", [
         "-nostdinc",
         "-isystem",
-        "external/avr-libc/include",
-        "-isystem",
-#        "external/avr-gcc-unwrapped/lib/gcc/avr/7.4.0/include-fixed",
-#        "-isystem",
         "external/avr-libc/avr/include",
+        "-isystem",
+        "{}/include-fixed".format(avr_gcc_include),
+        "-isystem",
+        "{}/include".format(avr_gcc_include),
         "-B",
         "external/avr-libc/avr/lib",
     ], True)
@@ -147,6 +149,7 @@ cc_toolchain_config = rule(
         "_gcc": attr.label(allow_single_file = True, default = "@AvrToolchain//cc_toolchain:avr-gcc.sh"),
         "_cpp": attr.label(allow_single_file = True, default = "@AvrToolchain//cc_toolchain:avr-gcc.sh"),
         "_ld": attr.label(allow_single_file = True, default = "@AvrToolchain//cc_toolchain:avr-gcc.sh"),
+        "_data": attr.label_list(default = ["@avr-gcc-unwrapped//:include"])
     },
     provides = [CcToolchainConfigInfo, platform_common.TemplateVariableInfo],
 )

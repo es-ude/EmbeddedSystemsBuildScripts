@@ -48,6 +48,7 @@ filegroup(
         "@avr-gcc-unwrapped//:bin",
         "@avr-libc//:include",
         "@avr-libc//:lib",
+        "@avr-gcc-unwrapped//:include",
     ],
 )
     """
