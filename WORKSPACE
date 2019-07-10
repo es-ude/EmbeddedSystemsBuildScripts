@@ -12,6 +12,10 @@ http_archive(
     urls = ["https://github.com/tweag/rules_nixpkgs/archive/{}.tar.gz".format(nixpkgs_rules_version)],
 )
 
+load("//:dependencies.bzl", "external_dependencies")
+
+external_dependencies()
+
 load("//AvrToolchain:avr.bzl", "avr_toolchain", "create_avr_toolchain")
 
 avr_toolchain()
