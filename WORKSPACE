@@ -3,15 +3,16 @@ workspace(
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("//AvrToolchain:avr.bzl", "create_avr_toolchain")
+load("//AvrToolchain:avr.bzl", "avr_toolchain", "create_avr_toolchain")
 load("//AvrToolchain:platforms/platform_list.bzl", "platforms")
 
-create_avr_toolchain(
-    name = "AvrToolchain",
-    mcu_list = platforms,
-)
+#create_avr_toolchain(
+#    name = "AvrToolchain",
+#    mcu_list = platforms,
+#)
+avr_toolchain()
 
-register_toolchains("//example:cc-toolchain-avr-atmega32u4")
+#register_toolchains("//example:cc-toolchain-avr-atmega32u4")
 
 unity_version = "1100c5d8f0af9f3a68df37e592564535c5de72c6"
 
@@ -52,12 +53,6 @@ nixpkgs_package(
 )
 
 nixpkgs_cc_configure(
-    repository = "@nixpkgs//:default.nix",
-)
-
-nixpkgs_package(
-    name = "avr-gcc",
-    attribute_path = "pkgsCross.avr.buildPackages.gcc",
     repository = "@nixpkgs//:default.nix",
 )
 
@@ -136,13 +131,4 @@ nixpkgs_package(
 nixpkgs_package(
     name = "avrdude",
     repository = "@nixpkgs//:default.nix",
-)
-
-skylib_version = "0.8.0"
-
-http_archive(
-    name = "bazel_skylib",
-    sha256 = "2ef429f5d7ce7111263289644d233707dba35e39696377ebab8b0bc701f7818e",
-    type = "tar.gz",
-    url = "https://github.com/bazelbuild/bazel-skylib/releases/download/{}/bazel-skylib.{}.tar.gz".format(skylib_version, skylib_version),
 )

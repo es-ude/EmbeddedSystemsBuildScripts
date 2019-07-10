@@ -39,6 +39,7 @@ def _avr_toolchain_impl(repository_ctx):
             "platforms/platform_list.bzl",
             "platforms/mcu/mcu.bzl",
             "BUILD.tpl",
+            "cc_toolchain/avr-gcc.sh",
         ]],
     )
     write_constraints(repository_ctx, paths)

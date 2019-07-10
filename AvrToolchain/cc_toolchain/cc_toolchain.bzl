@@ -1,5 +1,6 @@
-load("//AvrToolchain:cc_toolchain/third_party.bzl", "add_compiler_option_if_supported",
-
+load(
+    "//AvrToolchain:cc_toolchain/third_party.bzl",
+    "add_compiler_option_if_supported",
     "get_cxx_inc_directories",
 )
 
@@ -59,32 +60,32 @@ filegroup(
     name = "empty",
     srcs = [],
 )
+
+filegroup(
+    name = "all_files",
+    srcs = [
+        ":avr-gcc.sh",
+        "@avr-binutils//:bin",
+        "@avr-gcc-unwrapped//:bin",
+        "@avr-libc//:include",
+        "@avr-libc//:lib",
+    ],
+)
     """
     mcu_specific = """
 cc_toolchain_config(
     name = "avr_cc_toolchain_config_{mcu}",
-    cxx_include_dirs = {cxx_include_dirs},
     host_system_name = "{host_system_name}",
     mcu = "{mcu}",
     target_system_name = "avr-{mcu}",
-    tools = {{
-        "gcc": "{gcc}",
-        "ar": "{ar}",
-        "ld": "{ld}",
-        "cpp": "{g++}",
-        "gcov": "{gcov}",
-        "nm": "{nm}",
-        "objdump": "{objdump}",
-        "strip": "{strip}",
-    }},
 )
 
 cc_toolchain(
     name = "avr_cc_toolchain_{mcu}",
-    all_files = ":empty",
-    compiler_files = ":empty",
+    all_files = ":all_files",
+    compiler_files = ":all_files",
     dwp_files = ":empty",
-    linker_files = ":empty",
+    linker_files = ":all_files",
     objcopy_files = ":empty",
     strip_files = ":empty",
     toolchain_config = ":avr_cc_toolchain_config_{mcu}",
@@ -124,7 +125,5 @@ def create_cc_toolchain_package(repository_ctx, paths):
             repository_ctx,
         ),
     )
-    cc_toolchain_rule_template = paths[
-        "@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/cc_toolchain_config.bzl.tpl"
-    ]
+    repository_ctx.template("cc_toolchain/avr-gcc.sh", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/avr-gcc.sh"])
     create_cc_toolchain_config_rule(repository_ctx, tools["gcc"])

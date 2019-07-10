@@ -1,5 +1,6 @@
 load("@AvrToolchain//platforms/cpu_frequency:cpu_frequency.bzl", "cpu_frequency_flag")
 load("@AvrToolchain//:helpers.bzl", "default_embedded_binary")
+load("@AvrToolchain//platforms/mcu:mcu.bzl", "get_mcu", "get_mcu_as_array")
 
 default_embedded_binary(
     name = "main",
@@ -19,6 +20,7 @@ platform(
 load(
     "//example:cc_toolchain_config.bzl",
     "cc_toolchain_config",
+    #    "mcu",
 )
 
 package(default_visibility = ["//visibility:public"])
@@ -34,40 +36,43 @@ filegroup(
         ":avr-gcc.sh",
         "@avr-binutils//:bin",
         "@avr-gcc-unwrapped//:bin",
-        "@avr-gcc//:bin/avr-gcc",
         "@avr-libc//:include",
         "@avr-libc//:lib",
     ],
 )
 
-cc_toolchain_config(
-    name = "avr_cc_toolchain_config_atmega32u4",
-    #    compiler = "@avr-gcc//:bin/avr-gcc",
-    host_system_name = "linux",
-    mcu = "atmega32u4",
-    target_system_name = "avr-atmega32u4",
-)
+#mcu(
+#    name = "mcu",
+#    build_setting_default = "atmega32u4",
+#)
 
-cc_toolchain(
-    name = "avr_cc_toolchain_atmega32u4",
-    all_files = ":all_files",
-    compiler_files = ":all_files",
-    dwp_files = ":empty",
-    linker_files = ":all_files",
-    objcopy_files = ":empty",
-    strip_files = ":empty",
-    toolchain_config = ":avr_cc_toolchain_config_atmega32u4",
-    toolchain_identifier = "avr-toolchain-atmega32u4",
-)
-
-toolchain(
-    name = "cc-toolchain-avr-atmega32u4",
-    exec_compatible_with = [
-    ],
-    target_compatible_with = [
-        "@AvrToolchain//platforms/mcu:atmega32u4",
-        "@AvrToolchain//platforms:avr",
-    ],
-    toolchain = ":avr_cc_toolchain_atmega32u4",
-    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
-)
+#cc_toolchain_config(
+#    name = "avr_cc_toolchain_config_atmega32u4",
+#    #    compiler = "@avr-gcc//:bin/avr-gcc",
+#    host_system_name = "linux",
+#    mcu = get_mcu_as_array(),
+#    target_system_name = "avr-atmega32u4",
+#)
+#
+#cc_toolchain(
+#    name = "avr_cc_toolchain_atmega32u4",
+#    all_files = ":all_files",
+#    compiler_files = ":all_files",
+#    dwp_files = ":empty",
+#    linker_files = ":all_files",
+#    objcopy_files = ":empty",
+#    strip_files = ":empty",
+#    toolchain_config = ":avr_cc_toolchain_config_atmega32u4",
+#    toolchain_identifier = "avr-toolchain-atmega32u4",
+#)
+#
+#toolchain(
+#    name = "cc-toolchain-avr-atmega32u4",
+#    exec_compatible_with = [
+#    ],
+#    target_compatible_with = [
+#        "@AvrToolchain//platforms:avr",
+#    ],
+#    toolchain = ":avr_cc_toolchain_atmega32u4",
+#    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+#)

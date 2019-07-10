@@ -5,25 +5,30 @@ def upload(name, srcs = [], upload_script = "@AvrToolchain//:dfu_upload_script")
         name = name,
         srcs = [upload_script],
         args = get_mcu_as_array() + [
-            "$(location {input})".format(input = srcs[0])],
+            "$(location {input})".format(input = srcs[0]),
+        ],
         data = [srcs[0]],
     )
 
-def generate_hex(name, input, testonly = 0, tags=[]):
+def generate_hex(name, input, testonly = 0, tags = []):
     native.genrule(
         name = name,
         srcs = [input],
         tags = tags,
         outs = [name + ".hex"],
         cmd = select({
-            "@AvrToolchain//platforms:avr_config": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=",
-            "@AvrToolchain//host_config:enable_avr_size_injection": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); $(AVR_SIZE) --mcu=",
+            "@AvrToolchain//platforms:avr_config": "$(rootpath @avr-binutils//:bin/avr-objcopy) -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); $(rootpath @avr-binutils//:bin/avr-size)",
+            #            "@AvrToolchain//host_config:enable_avr_size_injection": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); $(AVR_SIZE) --mcu=",
             "//conditions:default": "echo 'target only valid for avr platforms'; return 1",
-        }) + get_mcu() + select({
-            "@AvrToolchain//platforms:avr_config": " --format avr $(SRCS)",
-            "//conditions:default": ""
+        }) + select({
+            "@AvrToolchain//platforms:avr_config": " -A --target elf32-avr $(SRCS)",
+            "//conditions:default": "",
         }),
         testonly = testonly,
+        tools = [
+            "@avr-binutils//:bin/avr-objcopy",
+            "@avr-binutils//:bin/avr-size",
+        ],
     )
 
 def default_embedded_binary(name, uploader = "@AvrToolchain//:dfu_upload_script", **kwargs):
@@ -76,8 +81,7 @@ def create_unity_library(
         unity_output_char_macro = None,
         strip_include_prefix = "external/Unity/src/",
         defines = [],
-        **kwargs
-):
+        **kwargs):
     _defines = defines
     if (unity_output_char_macro != None):
         _defines.append("UNITY_OUTPUT_CHAR(a)={}(a)".format(unity_output_char_macro))

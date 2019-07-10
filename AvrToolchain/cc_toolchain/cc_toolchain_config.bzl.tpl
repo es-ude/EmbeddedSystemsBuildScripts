@@ -4,9 +4,9 @@ load(
     "feature_set",
     "flag_group",
     "flag_set",
+    "make_variable",
     "tool_path",
     "with_feature_set",
-    "make_variable",
 )
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 
@@ -76,7 +76,20 @@ def new_feature(name, flags, enabled = False):
     return result
 
 def _impl(ctx):
-    tools = ctx.attr.tools
+    tools = {
+        "gcc": ctx.file._gcc.basename,
+        "cpp": ctx.file._cpp.basename,
+        "nm": "/bin/false",
+        "size": "/bin/false",
+        "ld": ctx.file._ld.basename,
+        "gcov": "/bin/false",
+        "objcopy": "/bin/false",
+        "objdump": "/bin/false",
+        "ar": "/bin/false",
+        "ranlib": "/bin/false",
+        "strip": "/bin/false",
+    }
+
     tool_paths = [
         tool_path(
             name = key,
@@ -87,26 +100,38 @@ def _impl(ctx):
     opt_feature = new_feature("opt", __CODE_SIZE_OPTIMIZATION_COPTS)
     fastbuild_feature = new_feature("fastbuild", ["-O2"])
     c99_feature = new_feature("gnu99", ["-std=gnu99"], True)
-    convert_warnings_to_errors = new_feature("treat_warnings_as_errors", @warnings_as_errors@)
-    features = [opt_feature, fastbuild_feature, c99_feature, convert_warnings_to_errors]
+    nostdinc_feature = new_feature("nostdinc", [
+        "-nostdinc",
+        "-isystem",
+        "external/avr-gcc-unwrapped/lib/gcc/avr/7.4.0/include",
+        "-isystem",
+        "external/avr-gcc-unwrapped/lib/gcc/avr/7.4.0/include-fixed",
+        "-isystem",
+        "external/avr-libc/avr/include",
+        "-B",
+        "external/avr-libc/avr/lib",
+    ], True)
+    treat_warnings_as_errors_feature = new_feature("treat_warnings_as_errors", @warnings_as_errors@)
+    features = [opt_feature, fastbuild_feature, c99_feature, nostdinc_feature]
     if ctx.attr.mcu != "none":
         features.append(new_feature("mcu", ["-mmcu=" + ctx.attr.mcu], True))
-    return [cc_common.create_cc_toolchain_config_info(
-        ctx = ctx,
-        toolchain_identifier = ctx.attr.toolchain_identifier,
-        host_system_name = ctx.attr.host_system_name,
-        target_system_name = ctx.attr.target_system_name,
-        target_cpu = ctx.attr.target_cpu,
-        target_libc = ctx.attr.target_libc,
-        abi_version = ctx.attr.abi_version,
-        compiler = "cc",
-        abi_libc_version = "unknown",
-        tool_paths = tool_paths,
-        cxx_builtin_include_directories = ctx.attr.cxx_include_dirs,
-        features = features,
-        make_variables = [make_variable("MCU", ctx.attr.mcu)]
-    ),
-    platform_common.TemplateVariableInfo({'MCU': ctx.attr.mcu})
+    return [
+        cc_common.create_cc_toolchain_config_info(
+            ctx = ctx,
+            toolchain_identifier = ctx.attr.toolchain_identifier,
+            host_system_name = ctx.attr.host_system_name,
+            target_system_name = ctx.attr.target_system_name,
+            target_cpu = ctx.attr.target_cpu,
+            target_libc = ctx.attr.target_libc,
+            abi_version = ctx.attr.abi_version,
+            compiler = "cc",
+            abi_libc_version = "unknown",
+            tool_paths = tool_paths,
+            cxx_builtin_include_directories = [],
+            features = features,
+            make_variables = [make_variable("MCU", ctx.attr.mcu)],
+        ),
+        platform_common.TemplateVariableInfo({"MCU": ctx.attr.mcu}),
     ]
 
 cc_toolchain_config = rule(
@@ -114,25 +139,14 @@ cc_toolchain_config = rule(
     attrs = {
         "host_system_name": attr.string(),
         "target_system_name": attr.string(default = "avr"),
-        "mcu": attr.string(default = "none"),
+        "mcu": attr.string(mandatory = True),
         "toolchain_identifier": attr.string(default = "avr-toolchain"),
         "target_cpu": attr.string(default = "avr"),
         "target_libc": attr.string(default = "unknown"),
         "abi_version": attr.string(default = "unknown"),
-        "tools": attr.string_dict(),
-        "_gcc": attr.label(allow_single_file = True, default = "@avr-gcc//:bin/avr-gcc"),
-        "_cpp": attr.label(allow_single_file = True, default = "@avr-gcc//:bin/avr-g++"),
-        "_nm": attr.label(allow_single_file = True, default = "@avr-binutils//:bin/avr-nm"),
-        "_objcopy": attr.label(allow_single_file = True, default = "@avr-binutils//:bin/avr-objcopy"),
-        "_ld": attr.label(allow_single_file = True, default = "@avr-gcc//:bin/avr-ld"),
-        "_size": attr.label(allow_single_file = True, default = "@avr-binutils//:bin/avr-size"),
-        "_gcov": attr.label(allow_single_file = True, default = "none"),
-        "_ar": attr.label(allow_single_file = True, default = "@avr-binutils//:bin/avr-ar"),
-        "_objdump": attr.label(allow_single_file = True, default = "@avr-binutils//:bin/avr-objdump"),
-        "_strip": attr.label(allow_single_file = True, default = "@avr-binutils//:bin/avr-strip"),
-        "_ranlib": attr.label(allow_single_file = True, default = "@avr-binutils//:bin/avr-ranlib"),
-        "_cxx_include_dirs": attr.label_list(allow_files = True, default = ["@avr-gcc-unwrapped//:lib"]),
-    }
+        "_gcc": attr.label(allow_single_file = True, default = "@AvrToolchain//cc_toolchain:avr-gcc.sh"),
+        "_cpp": attr.label(allow_single_file = True, default = "@AvrToolchain//cc_toolchain:avr-gcc.sh"),
+        "_ld": attr.label(allow_single_file = True, default = "@AvrToolchain//cc_toolchain:avr-gcc.sh"),
     },
     provides = [CcToolchainConfigInfo, platform_common.TemplateVariableInfo],
 )
