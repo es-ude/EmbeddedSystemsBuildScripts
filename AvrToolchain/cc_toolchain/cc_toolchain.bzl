@@ -4,27 +4,6 @@ load(
     "get_cxx_inc_directories",
 )
 
-def get_tools(repository_ctx, prefix = ""):
-    tools = {
-        "gcc": repository_ctx.attr.gcc_tool,
-        "ar": repository_ctx.attr.ar_tool,
-        "ld": repository_ctx.attr.ld_tool,
-        "g++": repository_ctx.attr.cpp_tool,
-        "gcov": repository_ctx.attr.gcov_tool,
-        "nm": repository_ctx.attr.nm_tool,
-        "objdump": repository_ctx.attr.objdump_tool,
-        "strip": repository_ctx.attr.strip_tool,
-        "size": repository_ctx.attr.size_tool,
-        "objcopy": repository_ctx.attr.objcopy_tool,
-    }
-    for key in tools.keys():
-        if tools[key] == "":
-            tools[key] = "{}".format(repository_ctx.which(prefix + key))
-    return tools
-
-def avr_tools(repository_ctx):
-    return get_tools(repository_ctx, "avr-")
-
 def _get_treat_warnings_as_errors_flags(repository_ctx, gcc):
     # below flags are most certainly coding errors
     flags_to_add = [
@@ -51,7 +30,7 @@ def create_cc_toolchain_config_rule(repository_ctx, gcc):
         },
     )
 
-def create_toolchain_definitions(tools, mcus, repository_ctx):
+def create_toolchain_definitions(mcus, repository_ctx):
     cc_toolchain_template = """load("@AvrToolchain//cc_toolchain:cc_toolchain_config.bzl",
 "cc_toolchain_config")
 package(default_visibility = ["//visibility:public"])
@@ -107,23 +86,21 @@ toolchain(
     for mcu in mcus:
         cc_toolchain_template += mcu_specific.format(
             mcu = mcu,
-            cxx_include_dirs = get_cxx_inc_directories(repository_ctx, tools["gcc"]),
             host_system_name = repository_ctx.os.name,
-            **tools
         )
-
     return cc_toolchain_template
 
 def create_cc_toolchain_package(repository_ctx, paths):
-    tools = avr_tools(repository_ctx)
     mcu_list = repository_ctx.attr.mcu_list
     repository_ctx.file(
         "cc_toolchain/BUILD",
         create_toolchain_definitions(
-            tools,
             mcu_list,
             repository_ctx,
         ),
     )
-    repository_ctx.template("cc_toolchain/avr-gcc.sh", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/avr-gcc.sh"])
-    create_cc_toolchain_config_rule(repository_ctx, tools["gcc"])
+    repository_ctx.template(
+        "cc_toolchain/avr-gcc.sh",
+        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/avr-gcc.sh"],
+    )
+    create_cc_toolchain_config_rule(repository_ctx, "@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/avr-gcc.sh")

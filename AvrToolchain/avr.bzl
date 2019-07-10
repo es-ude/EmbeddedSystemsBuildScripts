@@ -12,7 +12,6 @@ load(
 )
 load(
     "//AvrToolchain:cc_toolchain/cc_toolchain.bzl",
-    "avr_tools",
     "create_cc_toolchain_package",
 )
 load(
@@ -26,7 +25,6 @@ load(
 
 def _avr_toolchain_impl(repository_ctx):
     prefix = "@EmbeddedSystemsBuildScripts//AvrToolchain:"
-    tools = avr_tools(repository_ctx)
     paths = resolve_labels(
         repository_ctx,
         [prefix + label for label in [
@@ -47,10 +45,6 @@ def _avr_toolchain_impl(repository_ctx):
     repository_ctx.template(
         "helpers.bzl",
         paths["@EmbeddedSystemsBuildScripts//AvrToolchain:helpers.bzl.tpl"],
-        substitutions = {
-            "{avr_objcopy}": tools["objcopy"],
-            "{avr_size}": tools["size"],
-        },
     )
     repository_ctx.file("BUILD")
     repository_ctx.template("host_config/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:host_config/BUILD.tpl"])

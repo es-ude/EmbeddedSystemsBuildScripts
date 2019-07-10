@@ -103,10 +103,10 @@ def _impl(ctx):
     nostdinc_feature = new_feature("nostdinc", [
         "-nostdinc",
         "-isystem",
-        "external/avr-gcc-unwrapped/lib/gcc/avr/7.4.0/include",
+        "external/avr-libc/include",
         "-isystem",
-        "external/avr-gcc-unwrapped/lib/gcc/avr/7.4.0/include-fixed",
-        "-isystem",
+#        "external/avr-gcc-unwrapped/lib/gcc/avr/7.4.0/include-fixed",
+#        "-isystem",
         "external/avr-libc/avr/include",
         "-B",
         "external/avr-libc/avr/lib",
