@@ -21,6 +21,7 @@ http_archive(
 ```
 Where `<version>` is the version number of the scripts, that you want to use.
 
+### Documentation
 For more detailed documentation see [docs](https://embeddedsystemsbuildscripts.readthedocs.io/en/latest/)
 
 ### AvrToolchain
