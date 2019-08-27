@@ -30,7 +30,7 @@ To depend on the ``EmbeddedSystemsBuildScripts`` add this to your ``WORKSPACE`` 
   
   http_archive(
     name = "EmbeddedSystemsBuildScripts",
-    strip-prefix = "EmbeddedSystemsBuildScripts-{version}",
+    strip_prefix = "EmbeddedSystemsBuildScripts-{version}",
     urls = ["https://github.com/es-ude/EmbeddedSystemsBuildScripts/archive/{version}.tar.gz"]
   )
 
@@ -39,7 +39,7 @@ Or use::
 
   http_archive(
     name = "EmbeddedSystemsBuildScripts",
-    strip-prefix = "EmbeddedSystemsBuildScripts-master",
+    strip_prefix = "EmbeddedSystemsBuildScripts-master",
     urls = ["https://github.com/es-ude/EmbeddedSystemsBuildScripts/archive/master.tar.gz"]
   )
 
