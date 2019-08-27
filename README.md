@@ -26,7 +26,7 @@ For more detailed documentation see [docs](https://embeddedsystemsbuildscripts.r
 ### AvrToolchain
 To be able to build for avr microcontrollers you add the following lines to your `WORKSPACE`:
 ```python
-load("@EmbeddedSystemsBuildScripts//:external_dependencies.bzl", "avr_toolchain")
+load("@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl", "avr_toolchain")
 
 avr_toolchain()
 ```
