@@ -59,7 +59,7 @@ The `mcu` constraint is mandatory and used internally to choose the correct tool
 
 To build a target for your platform use
 ```bash
-$ bazel build //:myTarget --incompatible_cc_toolchain_resolution=true --platforms //:MyPlatform
+$ bazel build //:myTarget --incompatible_enable_cc_toolchain_resolution=true --platforms //:MyPlatform
 ```
 
 Additionally to creating your own platform you can use one of
