@@ -1,4 +1,4 @@
-load("//Toolchains/Avr:cc_toolchain/third_party.bzl", "add_compiler_option_if_supported",
+load("//Toolchains:third_party.bzl", "add_compiler_option_if_supported",
     "get_cxx_inc_directories",
 )
 
