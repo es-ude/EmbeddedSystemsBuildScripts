@@ -1,3 +1,5 @@
+load("//Toolchains/Avr:common_definitions.bzl", "AVR_RESOURCE_PREFIX")
+
 def _write_mcu_constraints(repository_ctx, mcu_list):
     _write_constraints(repository_ctx, "mcu", mcu_list, "platforms/mcu/BUILD")
 
@@ -21,7 +23,7 @@ def write_constraints(repository_ctx, paths):
     _write_mcu_constraints(repository_ctx, repository_ctx.attr.mcu_list)
     repository_ctx.template(
         "platforms/cpu_frequency/cpu_frequency.bzl",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/cpu_frequency/cpu_frequency.bzl.tpl"],
+        paths[AVR_RESOURCE_PREFIX + ":platforms/cpu_frequency/cpu_frequency.bzl.tpl"],
     )
     _write_constraints(
         repository_ctx,
@@ -41,5 +43,5 @@ def write_constraints(repository_ctx, paths):
         ],
         "platforms/board_id/BUILD",
     )
-    repository_ctx.template("platforms/misc/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/misc/BUILD.tpl"])
-    repository_ctx.template("platforms/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/BUILD.tpl"])
+    repository_ctx.template("platforms/misc/BUILD", paths[AVR_RESOURCE_PREFIX + ":platforms/misc/BUILD.tpl"])
+    repository_ctx.template("platforms/BUILD", paths[AVR_RESOURCE_PREFIX + ":platforms/BUILD.tpl"])
