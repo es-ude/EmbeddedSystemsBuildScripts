@@ -2,8 +2,10 @@
 // Created by lukas on 6/2/19.
 //
 
-#include <avr/io.h>
+#include <stdio.h>
 
 int main(void){
-    DDRD = (1 << 5);
+    int a = 5;
+    int b = a + 3;
+    printf("%i", b);
 }
