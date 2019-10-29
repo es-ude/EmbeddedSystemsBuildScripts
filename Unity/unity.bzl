@@ -183,7 +183,7 @@ def __extract_sub_dir_from_header_path(single_header_path):
     sub_dir = single_header_path
     if sub_dir.count("//") > 0:
         sub_dir = sub_dir.partition("//")[2]
-    sub_dir = sub_dir.replace(":", "/").rsplit("/", maxsplit = 1)[0]
+    sub_dir = sub_dir.replace(":", "/").rsplit("/", 1)[0]
     if sub_dir.startswith("//"):
         sub_dir = sub_dir[2:]
     elif sub_dir.startswith("/"):
