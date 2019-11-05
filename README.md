@@ -117,11 +117,21 @@ Attributes listed in the `unity_test` call are passed to the internal cc_binary 
 ###### mock
 With the help of the mock macro you can use CMock to create mock functions for a specified header file.
 Currently the corresponding header file has to be exported with the `exports_files` rule from the package that contains it.
+
+```python
+exports_files(
+    srcs = ["Functions.h"],
+    visibility = ["//visibility:public"],
+)
+```
+
 You can then define a mock library, containing the header to control and query the mocks state as well as the object file with the mock implementation by
+
 ```python
 mock(
   name = "MyMock",
   srcs = ["//lib:Functions.h"],
+  deps = ["//lib:FunctionsHdr"]
 )
 
 unity_test(
@@ -130,5 +140,10 @@ unity_test(
 )
 ```
 
-Note the order of the targets listed in the deps attribute.
+Note the order of the targets listed in the deps attribute. 
 This will make sure, that the definitions from MyMock are used instead of production code. Often however it will be better to build a small lib containing only the code under test.
+In order to use the mocked header file instead of the original, the include directive needs to follow this schema
+
+```c
+#include "lib/MockFunctions.h"
+```
