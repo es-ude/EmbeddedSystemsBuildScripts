@@ -41,7 +41,7 @@ def write_constraints(repository_ctx, paths):
             "elastic_node_v4",
             "elastic_node_v4_monitor",
             "arduino_uno",
-            "arduino_mega",
+            "arduino_mega_config",
         ],
         "platforms/board_id/BUILD",
     )
