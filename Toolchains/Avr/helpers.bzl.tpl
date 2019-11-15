@@ -1,6 +1,6 @@
-load("@Toolchains_Avr//platforms/mcu:mcu.bzl", "get_mcu", "get_mcu_as_array")
+load("@AvrToolchain//platforms/mcu:mcu.bzl", "get_mcu", "get_mcu_as_array")
 
-def upload(name, srcs = [], upload_script = "@Toolchains_Avr//:dfu_upload_script"):
+def upload(name, srcs = [], upload_script = "@AvrToolchain//:dfu_upload_script"):
     native.sh_binary(
         name = name,
         srcs = [upload_script],
@@ -16,17 +16,17 @@ def generate_hex(name, input, testonly = 0, tags=[]):
         tags = tags,
         outs = [name + ".hex"],
         cmd = select({
-            "@Toolchains_Avr//platforms:avr_config": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=",
-            "@Toolchains_Avr//host_config:enable_avr_size_injection": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); $(AVR_SIZE) --mcu=",
+            "@AvrToolchain//platforms:avr_config": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); {avr_size} --mcu=",
+            "@AvrToolchain//host_config:enable_avr_size_injection": "{avr_objcopy} -O ihex -j .text -j .data -j .bss $(SRCS) $(OUTS); $(AVR_SIZE) --mcu=",
             "//conditions:default": "echo 'target only valid for avr platforms'; return 1",
         }) + get_mcu() + select({
-            "@Toolchains_Avr//platforms:avr_config": " --format avr $(SRCS)",
+            "@AvrToolchain//platforms:avr_config": " --format avr $(SRCS)",
             "//conditions:default": ""
         }),
         testonly = testonly,
     )
 
-def default_embedded_binary(name, uploader = "@Toolchains_Avr//:dfu_upload_script", **kwargs):
+def default_embedded_binary(name, uploader = "@AvrToolchain//:dfu_upload_script", **kwargs):
     native.cc_binary(
         name = "_" + name + "ELF",
         **kwargs

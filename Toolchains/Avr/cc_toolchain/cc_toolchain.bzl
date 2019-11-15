@@ -52,7 +52,7 @@ def create_cc_toolchain_config_rule(repository_ctx, gcc):
     )
 
 def create_toolchain_definitions(tools, mcus, repository_ctx):
-    cc_toolchain_template = """load("@Toolchains_Avr//cc_toolchain:cc_toolchain_config.bzl",
+    cc_toolchain_template = """load("@AvrToolchain//cc_toolchain:cc_toolchain_config.bzl",
 "cc_toolchain_config")
 package(default_visibility = ["//visibility:public"])
 
@@ -95,8 +95,8 @@ cc_toolchain(
 toolchain(
     name = "cc-toolchain-avr-{mcu}",
     target_compatible_with = [
-        "@Toolchains_Avr//platforms/mcu:{mcu}",
-        "@Toolchains_Avr//platforms:avr",
+        "@AvrToolchain//platforms/mcu:{mcu}",
+        "@AvrToolchain//platforms:avr",
     ],
     exec_compatible_with = [
     ],
