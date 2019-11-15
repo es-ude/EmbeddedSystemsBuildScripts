@@ -37,7 +37,9 @@ def write_constraints(repository_ctx, paths):
         [
             "motherboard",
             "elastic_node_v3",
+            "elastic_node_v3_monitor",
             "elastic_node_v4",
+            "elastic_node_v4_monitor",
             "arduino_uno",
             "arduino_mega",
         ],

@@ -27,7 +27,7 @@ For more detailed documentation see [docs](https://embeddedsystemsbuildscripts.r
 ### AvrToolchain
 To be able to build for avr microcontrollers you add the following lines to your `WORKSPACE`:
 ```python
-load("@EmbeddedSystemsBuildScripts//:external_dependencies.bzl", "avr_toolchain")
+load("@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl", "avr_toolchain")
 
 avr_toolchain()
 ```
@@ -60,7 +60,7 @@ The `mcu` constraint is mandatory and used internally to choose the correct tool
 
 To build a target for your platform use
 ```bash
-$ bazel build //:myTarget --incompatible_cc_toolchain_resolution=true --platforms //:MyPlatform
+$ bazel build //:myTarget --incompatible_enable_cc_toolchain_resolution=true --platforms //:MyPlatform
 ```
 
 Additionally to creating your own platform you can use one of
@@ -118,11 +118,21 @@ Attributes listed in the `unity_test` call are passed to the internal cc_binary 
 ###### mock
 With the help of the mock macro you can use CMock to create mock functions for a specified header file.
 Currently the corresponding header file has to be exported with the `exports_files` rule from the package that contains it.
+
+```python
+exports_files(
+    srcs = ["Functions.h"],
+    visibility = ["//visibility:public"],
+)
+```
+
 You can then define a mock library, containing the header to control and query the mocks state as well as the object file with the mock implementation by
+
 ```python
 mock(
   name = "MyMock",
   srcs = ["//lib:Functions.h"],
+  deps = ["//lib:FunctionsHdr"]
 )
 
 unity_test(
@@ -131,5 +141,10 @@ unity_test(
 )
 ```
 
-Note the order of the targets listed in the deps attribute.
+Note the order of the targets listed in the deps attribute. 
 This will make sure, that the definitions from MyMock are used instead of production code. Often however it will be better to build a small lib containing only the code under test.
+In order to use the mocked header file instead of the original, the include directive needs to follow this schema
+
+```c
+#include "lib/MockFunctions.h"
+```
