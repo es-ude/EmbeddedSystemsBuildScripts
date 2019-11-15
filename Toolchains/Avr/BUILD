@@ -4,7 +4,7 @@ pkg_tar(
     name = "pkg",
     srcs = glob(["**/*"]),
     strip_prefix = ".",
-    package_dir = "AvrToolchain",
+    package_dir = "Toolchains/Avr",
     mode = "0644",
     visibility = ["//visibility:public"],
 )

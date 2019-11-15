@@ -35,14 +35,14 @@ This will generate an external Workspace, containing a toolchain definition for 
 
 Use
 ```bash
-$ bazel query 'kind(constraint_setting, @AvrToolchain//platforms/...)'
+$ bazel query 'kind(constraint_setting, @Toolchains_Avr//platforms/...)'
 ```
 to retrieve a list of all defined constraint settings. These are dimensions from which you can choose values to define your own platform.
 Note that the constraint_setting `board_id` is used by the department to refer to development boards.
 
 To see a list of possible values for constraint call for
 ```bash
-$ bazel query 'attr(constraint_setting, <your_constraint_setting_name>, @AvrToolchain//platforms/...)'
+$ bazel query 'attr(constraint_setting, <your_constraint_setting_name>, @Toolchains_Avr//platforms/...)'
 ```
 
 You can then use these constraints to create your own platform definitions:
@@ -50,9 +50,9 @@ You can then use these constraints to create your own platform definitions:
 platform(
     name = "MyPlatform",
     constraint_values = [
-        "@AvrToolchain//platforms/mcu:atmega328p",
-        "@AvrToolchain//platforms/cpu_frequency:16mhz",
-        "@AvrToolchain//platforms/misc:hardware_usart",
+        "@Toolchains_Avr//platforms/mcu:atmega328p",
+        "@Toolchains_Avr//platforms/cpu_frequency:16mhz",
+        "@Toolchains_Avr//platforms/misc:hardware_usart",
     ]
 )
 ```
@@ -66,7 +66,7 @@ $ bazel build //:myTarget --incompatible_cc_toolchain_resolution=true --platform
 Additionally to creating your own platform you can use one of
 our predefined boards. To get a list call
 ```bash
-$ bazel query 'kind(platform, @AvrToolchain//platforms/...)'
+$ bazel query 'kind(platform, @Toolchains_Avr//platforms/...)'
 ```
 
 In most cases you'll want to apply various build flags to optimize the program size. Calling the build with the flag `--compilation_mode opt` will apply a set of flags we found useful for that.
@@ -82,9 +82,9 @@ While there is no difference in how native and embedded cc_* targets are defined
 These are building the binary, converting it to a `.hex` file and uploading it to the program memory.
 The macro `default_embedded_binary` does all that.
 ```python
-load("@AvrToolchain//:helpers.bzl", "default_embedded_binary")
+load("@Toolchains_Avr//:helpers.bzl", "default_embedded_binary")
 
-load("@AvrToolchain//platforms/cpu_frequency:cpu_frequency.bzl", "cpu_frequency_flag")
+load("@Toolchains_Avr//platforms/cpu_frequency:cpu_frequency.bzl", "cpu_frequency_flag")
 
 default_embedded_binary(
     name = "main",

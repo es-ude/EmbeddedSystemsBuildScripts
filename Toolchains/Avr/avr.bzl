@@ -90,10 +90,10 @@ create_avr_toolchain = repository_rule(
 
 def avr_toolchain():
     create_avr_toolchain(
-        name = "AvrToolchain",
+        name = "Toolchains_Avr",
         mcu_list = platforms,
     )
     for mcu in platforms:
         native.register_toolchains(
-            "@AvrToolchain//cc_toolchain:cc-toolchain-avr-" + mcu,
+            "@Toolchains_Avr//cc_toolchain:cc-toolchain-avr-" + mcu,
         )

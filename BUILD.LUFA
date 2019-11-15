@@ -1,4 +1,4 @@
-load("@AvrToolchain//platforms/cpu_frequency:cpu_frequency.bzl", "cpu_frequency_flag")
+load("@Toolchains_Avr//platforms/cpu_frequency:cpu_frequency.bzl", "cpu_frequency_flag")
 
 package(default_visibility = ["//visibility:public"])
 

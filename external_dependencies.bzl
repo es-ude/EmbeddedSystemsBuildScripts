@@ -24,7 +24,7 @@ def load_third_party_deps():
 
     http_archive(
         name = "LUFA",
-        build_file = "@AvrToolchain//:BUILD.LUFA",
+        build_file = "@Toolchains_Avr//:BUILD.LUFA",
         strip_prefix = "lufa-LUFA-170418",
         urls = ["http://fourwalledcubicle.com/files/LUFA/LUFA-170418.zip"],
     )
