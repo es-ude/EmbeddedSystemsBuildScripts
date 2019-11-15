@@ -51,6 +51,17 @@ platform(
 )
 
 platform(
+    name = "ElasticNode_v3_monitor",
+    constraint_values = [
+            "@AvrToolchain//platforms/cpu_frequency:8mhz",
+            "@AvrToolchain//platforms/misc:lufa_uart",
+            "@AvrToolchain//platforms/mcu:atmega32u4",
+            "@AvrToolchain//platforms/board_id:elastic_node_v3_monitor",
+    ],
+    parents = [":avr_common"],
+)
+
+platform(
     name = "ElasticNode_v4",
     constraint_values = [
             "@AvrToolchain//platforms/cpu_frequency:8mhz",
@@ -58,6 +69,17 @@ platform(
             "@AvrToolchain//platforms/misc:fpga_connected",
             "@AvrToolchain//platforms/mcu:at90usb1287",
             "@AvrToolchain//platforms/board_id:elastic_node_v4",
+    ],
+    parents = [":avr_common"],
+)
+
+platform(
+    name = "ElasticNode_v4_monitor",
+    constraint_values = [
+            "@AvrToolchain//platforms/cpu_frequency:8mhz",
+            "@AvrToolchain//platforms/misc:lufa_uart",
+            "@AvrToolchain//platforms/mcu:atmega32u4",
+            "@AvrToolchain//platforms/board_id:elastic_node_v4_monitor",
     ],
     parents = [":avr_common"],
 )
