@@ -53,9 +53,9 @@ def _impl(ctx):
         for key in tools
     ]
     features = [
-        new_feature("architecture", ["-mcpu=" + ctx.attr.target_cpu], enabled = True),
-        new_feature("libc_" + ctx.attr.target_libc, ["--specs={}.specs".format(ctx.attr.target_libc)], enabled = True),
-        new_feature("semihost_retarget", ["--specs=nosys.specs"], enabled = True, actions = [ACTION_NAMES.cpp_link_executable]),
+        new_feature("architecture", enabled=True, flags=["-mcpu=" + ctx.attr.target_cpu]),
+        new_feature("temporary_flags", enabled = True, flags=["-DUSE_HAL_DRIVER", "-std=gnu11", "-g3", "-O0","-mfloat-abi=soft", "-mthumb", "--specs=nano.specs"]),
+        new_feature("hardcoded_linker_flags",enabled = True, flags=["--specs=nosys.specs", "-static", "-Wl,--start-group -lc -lm -Wl,--end-group"], actions = [ACTION_NAMES.cpp_link_executable]),
     ]
 
     return [cc_common.create_cc_toolchain_config_info(
@@ -79,7 +79,7 @@ cc_toolchain_config = rule(
         "host_system_name": attr.string(),
         "target_system_name": attr.string(default = "k8"),
         "toolchain_identifier": attr.string(default = "arm-toolchain"),
-        "target_cpu": attr.string(default = "cortex-m0"),
+        "target_cpu": attr.string(default = "cortex-m0plus"),
         "target_libc": attr.string(default = "nano"),
         "abi_version": attr.string(default = "unknown"),
         "tools": attr.string_dict(),
