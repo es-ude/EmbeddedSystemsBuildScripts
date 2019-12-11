@@ -53,9 +53,10 @@ def _impl(ctx):
         for key in tools
     ]
     features = [
-        new_feature("architecture", enabled=True, flags=["-mcpu=" + ctx.attr.target_cpu]),
-        new_feature("temporary_flags", enabled = True, flags=["-DUSE_HAL_DRIVER", "-std=gnu11", "-g3", "-O0","-mfloat-abi=soft", "-mthumb", "--specs=nano.specs"]),
-        new_feature("hardcoded_linker_flags",enabled = True, flags=["--specs=nosys.specs", "-static", "-Wl,--start-group -lc -lm -Wl,--end-group"], actions = [ACTION_NAMES.cpp_link_executable]),
+        new_feature("architecture", enabled = True, flags = ["-mcpu=" + ctx.attr.target_cpu]),
+        #        new_feature("temporary_flags", enabled = True, flags = ["-DUSE_HAL_DRIVER", "-std=gnu11", "-g3", "-O0", "-mfloat-abi=soft", "-mthumb", "--specs=nano.specs", "-Wall", "-fmessage-length=0", "-fno-builtin", "-ffunction-sections", "-fdata-sections", "-fsingle-precision-constant"]),
+        new_feature("arm_flags", enabled = True, flags = ["-D__REDLIB__", "-DDEBUG", "-D__USE_LPCOPEN", "-DCORE_M4", "-DNO_BOARD_LIB", "-D__LPC407X_8X__", "-O0", "-g3", "-Wall", "-fmessage-length=0", "-fno-builtin", "-ffunction-sections", "-fdata-sections", "-fsingle-precision-constant", "-mcpu=cortex-m4", "-mfpu=fpv4-sp-d16", "-mfloat-abi=softfp", "-mthumb", "-fstack-usage", "-MMD", "-MP", "-std=gnu99", "-Wall", "-g3"]),
+        new_feature("hardcoded_linker_flags", enabled = True, flags = ["-mcpu=cortex-m4 -mfpu=fpv4-sp-d16", "-mfloat-abi=softfp -mthumb", "-Wl,--gc-sections", "-Wl,--cref", "-Wl,--print-memory-usage"], actions = [ACTION_NAMES.cpp_link_executable]),
     ]
 
     return [cc_common.create_cc_toolchain_config_info(
@@ -79,7 +80,7 @@ cc_toolchain_config = rule(
         "host_system_name": attr.string(),
         "target_system_name": attr.string(default = "k8"),
         "toolchain_identifier": attr.string(default = "arm-toolchain"),
-        "target_cpu": attr.string(default = "cortex-m0plus"),
+        "target_cpu": attr.string(),
         "target_libc": attr.string(default = "nano"),
         "abi_version": attr.string(default = "unknown"),
         "tools": attr.string_dict(),

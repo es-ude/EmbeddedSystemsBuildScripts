@@ -29,6 +29,26 @@ cc_toolchain_config(
     }
 )
 
+cc_toolchain_config(
+    name = "arm_none_eabi_toolchain_config_cortex_m4",
+    cxx_include_dirs = @cxx_include_directories@,
+    host_system_name = "linux",
+    target_system_name = "cortex",
+    target_cpu = "cortex-m4",
+    tools = {
+        "gcc": "@gcc@",
+        "cpp": "@g++@",
+        "ar": "@ar@",
+        "ld": "@ld@",
+        "nm": "@nm@",
+        "strip": "@strip@",
+        "objdump": "@objdump@",
+        "size": "@size@",
+        "objcopy": "@objcopy@",
+        "gcov": "@gcov@",
+    }
+)
+
 cc_toolchain(
     name = "arm_none_eabi_toolchain",
     all_files = ":empty",
@@ -51,3 +71,4 @@ toolchain(
     toolchain = ":arm_none_eabi_toolchain",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
+
