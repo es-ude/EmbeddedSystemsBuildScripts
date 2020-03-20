@@ -53,9 +53,9 @@ def _impl(ctx):
         for key in tools
     ]
     features = [
-        new_feature("architecture", enabled=True, flags=["-mcpu=" + ctx.attr.target_cpu]),
-        new_feature("temporary_flags", enabled = True, flags=["-DUSE_HAL_DRIVER", "-std=gnu11", "-g3", "-O0","-mfloat-abi=soft", "-mthumb", "--specs=nano.specs"]),
-        new_feature("hardcoded_linker_flags",enabled = True, flags=["--specs=nosys.specs", "-static", "-Wl,--start-group -lc -lm -Wl,--end-group"], actions = [ACTION_NAMES.cpp_link_executable]),
+        new_feature("architecture", enabled = True, flags=["-mcpu=" + ctx.attr.target_cpu]),
+        new_feature("build_flags", enabled = True, flags=["-std=gnu11", "-g3", "-DUSE_HAL_DRIVER", "-DDEBUG", "-DSTM32F407xx", "-O0", "-ffunction-sections", "-fdata-sections", "-Wall", "--specs=nano.specs", "-mfpu=fpv4-sp-d16", "-mfloat-abi=hard", "-mthumb"]),
+        new_feature("linker_flags", enabled = True, flags=["-mcpu=cortex-m4", "--specs=nosys.specs", "-Wl,--gc-sections", "-static", "-mfpu=fpv4-sp-d16", "-mfloat-abi=hard", "-mthumb", "-Wl,--start-group -lc -lm -Wl,--end-group"], actions = [ACTION_NAMES.cpp_link_executable])
     ]
 
     return [cc_common.create_cc_toolchain_config_info(
@@ -63,7 +63,7 @@ def _impl(ctx):
         toolchain_identifier = ctx.attr.toolchain_identifier,
         host_system_name = ctx.attr.host_system_name,
         target_system_name = ctx.attr.target_system_name,
-        target_cpu = ctx.attr.target_cpu,
+        target_cpu = ctx.attr.target_cpu,   
         target_libc = ctx.attr.target_libc,
         abi_version = ctx.attr.abi_version,
         compiler = "cc",

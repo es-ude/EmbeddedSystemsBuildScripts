@@ -66,4 +66,4 @@ def arm_toolchain():
     create_arm_toolchain(
         name = "ArmToolchain",
     )
-    native.register_toolchains("@ArmToolchain//cc_toolchain:cc-toolchain-arm-eabi-cortex-m0")
+    native.register_toolchains("@ArmToolchain//cc_toolchain:cc-toolchain-arm-eabi-cortex-m4")
