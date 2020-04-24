@@ -31,7 +31,7 @@ cc_toolchain_config(
 
 cc_toolchain_config(
     name = "arm_none_eabi_toolchain_config_cortex_m4",
-    cxx_include_dirs = @cxx_include_directories@,
+    cxx_include_dirs = @cxx_include_directories@ + ["/usr/include/newlib"],
     host_system_name = "linux",
     target_system_name = "cortex",
     target_cpu = "cortex-m4",
