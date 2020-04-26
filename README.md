@@ -52,7 +52,8 @@ platform(
         "@AvrToolchain//platforms/mcu:atmega328p",
         "@AvrToolchain//platforms/cpu_frequency:16mhz",
         "@AvrToolchain//platforms/misc:hardware_usart",
-    ]
+    ],
+    parents = ["@AvrToolchain//platforms:avr_common"]
 )
 ```
 The `mcu` constraint is mandatory and used internally to choose the correct toolchain configuration.
