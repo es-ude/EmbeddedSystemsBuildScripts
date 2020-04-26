@@ -86,9 +86,8 @@ def _impl(ctx):
     ]
     opt_feature = new_feature("opt", __CODE_SIZE_OPTIMIZATION_COPTS)
     fastbuild_feature = new_feature("fastbuild", ["-O2"])
-    c99_feature = new_feature("gnu99", ["-std=gnu99"], True)
     convert_warnings_to_errors = new_feature("treat_warnings_as_errors", @warnings_as_errors@)
-    features = [opt_feature, fastbuild_feature, c99_feature, convert_warnings_to_errors]
+    features = [opt_feature, fastbuild_feature, convert_warnings_to_errors]
     if ctx.attr.mcu != "none":
         features.append(new_feature("mcu", ["-mmcu=" + ctx.attr.mcu], True))
     return [cc_common.create_cc_toolchain_config_info(
