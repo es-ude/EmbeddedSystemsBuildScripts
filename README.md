@@ -75,6 +75,11 @@ To treat warnings that most probably come from programming errors - e.g. missing
 --features=treat_warnings_as_errors
 ```
 
+By default, we compile with the feature called `gnu99`, that adds `--std=gnu99` to the build command. However, if you want to build with avr-g++ `-std=gnu99` is an invalid flag and can be disabled by applying the following flag to the bazel call
+```bash
+--feature=-gnu99
+```
+
 ### Macros
 #### Embedded Builds
 While there is no difference in how native and embedded cc_* targets are defined, actually being able to program a device involves more steps.
