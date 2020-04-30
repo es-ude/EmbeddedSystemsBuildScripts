@@ -95,6 +95,10 @@ To compile for one of these platforms use e.g.::
 
   $ bazel build //:myTarget --platforms @AvrToolchain//platforms:Motherboard
 
+By default, we compile with the feature named ``gnu99``, that adds ``--std=gnu99`` to the build command. However, if you want to
+build with avr-g++ ``-std=gnu99`` is an invalid flag and can be disabled by
+adding the build flag ``--feature=-gnu99``.
+
 How to define your own platforms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
