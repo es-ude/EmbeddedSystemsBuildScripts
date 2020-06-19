@@ -105,6 +105,8 @@ The above call will create hex file with the target name `"main"`, an elf file w
 Additionally the `cpu_frequency_flag` macro is loaded. It simply resolves the applied cpu frequency constraint to the matching symbol definition flag, accessible in the source files
 by the c macro `F_CPU`.
 
+Additional `copts` can be added by concatenating `cpu_frequency_flag()` with a list of the desired `copts`, i.e. `copts = cpu_frequency_flag() + ["-DDEBUG=1"]`.
+
 #### Unity
 ###### unity_test
 There are two macros unit tests. All can be found in the file
