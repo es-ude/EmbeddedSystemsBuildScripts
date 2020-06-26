@@ -1,6 +1,5 @@
 def _doxygen_archive_impl(ctx):
     """Generate a .tar.gz archive containing documentation using Doxygen.
-
     Args:
         name: label for the generated rule. The archive will be "%{name}.tar.gz".
         doxyfile: configuration file for Doxygen, @@OUTPUT_DIRECTORY@@ will be replaced with the actual output dir
@@ -49,21 +48,21 @@ def _sphinx_archive_impl(ctx):
 
     Args:
         config_file: sphinx conf.py file
-
         doxygen_xml_archive: an archive that containing the generated doxygen
             xml files to be consumed by the breathe sphinx plugin.
             Setting this attribute automatically enables the breathe plugin
-
         srcs: the *.rst files to consume
     """
     out_file = ctx.outputs.sphinx
     out_dir_path = out_file.short_path[:-len(".tar.gz")]
     commands = ["mkdir _static"]
+    inputs = ctx.files.srcs
     if ctx.attr.doxygen_xml_archive != None:
         commands = commands + [
             "mkdir xml",
             "tar -xzf {xml} -C xml --strip-components=2".format(xml = ctx.file.doxygen_xml_archive.path),
         ]
+        inputs.append(ctx.file.doxygen_xml_archive)
 
     commands = commands + [
         "sphinx-build -M build ./ _build -q -b html -C {settings}".format(
@@ -77,7 +76,7 @@ def _sphinx_archive_impl(ctx):
     ctx.actions.run_shell(
         use_default_shell_env = True,
         outputs = [out_file],
-        inputs = ctx.files.srcs,
+        inputs = inputs,
         command = " && ".join(commands),
     )
 
