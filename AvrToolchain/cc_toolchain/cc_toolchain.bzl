@@ -133,4 +133,4 @@ def create_cc_toolchain_package(repository_ctx, paths):
 def check_for_missing_tools(tools):
     for key in tools.keys():
         if "None" in tools[key]:
-            fail("avr-%s is missing!" % key, key)
+            fail("Unable to find the avr-%s toolchain, make sure avr-gcc and avr-binutils are installed and accecable from your path environment" % key)
