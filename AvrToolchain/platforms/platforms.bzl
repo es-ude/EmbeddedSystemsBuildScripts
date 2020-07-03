@@ -26,7 +26,10 @@ def write_constraints(repository_ctx, paths):
     _write_constraints(
         repository_ctx,
         "uploader",
-        ["dfu_programmer", "avrdude"],
+        [
+            "dfu_programmer",
+            "avrdude"
+        ],
         "platforms/uploader/BUILD",
     )
     _write_constraints(
@@ -43,5 +46,15 @@ def write_constraints(repository_ctx, paths):
         ],
         "platforms/board_id/BUILD",
     )
+    _write_constraints(
+        repository_ctx,
+        "programmer",
+        [
+            "arduino",
+            "wiring",
+        ],
+        "platforms/programmer/BUILD",
+    )
     repository_ctx.template("platforms/misc/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/misc/BUILD.tpl"])
+    repository_ctx.template("platforms/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/BUILD.tpl"])
     repository_ctx.template("platforms/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/BUILD.tpl"])

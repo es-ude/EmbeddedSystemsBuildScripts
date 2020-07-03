@@ -9,6 +9,28 @@ def upload(name, srcs = [], upload_script = "@AvrToolchain//:dfu_upload_script")
         data = [srcs[0]],
     )
 
+def generate_dfu_programmer_upload_script():
+    native.genrule(
+        name="dfu",
+        outs=["dfu_programmer_upload_script.sh"],
+        cmd = """echo "dfu-programmer \$$1 erase; dfu-programmer \$$1 flash \$$2; dfu-programmer \$$1 reset;" > $@""",
+    )
+def generate_avrdude_upload_script():
+    programmer = select({
+        "@AvrToolchain//platforms/programmer:arduino_config": "arduino",
+        "@AvrToolchain//platforms/programmer:wiring_config": "wiring",
+    })
+    native.genrule(
+        name="avrdude",
+        outs=["avrdude_upload_script.sh"],
+        cmd="""echo "avrdude -c """ + programmer + """ -p \$$1 -P \$$3 -D -V -U flash:w:\$$2" > $@""",
+    )
+
+def generate_upload_scripts():
+    generate_avrdude_upload_script()
+    generate_dfu_programmer_upload_script()
+
+
 def generate_hex(name, input, testonly = 0, tags=[]):
     native.genrule(
         name = name,
@@ -26,7 +48,8 @@ def generate_hex(name, input, testonly = 0, tags=[]):
         testonly = testonly,
     )
 
-def default_embedded_binary(name, uploader = "@AvrToolchain//:dfu_upload_script", **kwargs):
+
+def default_embedded_binary(name, uploader, **kwargs):
     native.cc_binary(
         name = "_" + name + "ELF",
         **kwargs
@@ -35,6 +58,7 @@ def default_embedded_binary(name, uploader = "@AvrToolchain//:dfu_upload_script"
         name = name,
         input = "_" + name + "ELF",
     )
+    generate_upload_scripts()
     upload(
         name = "_" + name + "Upload",
         srcs = [name],
