@@ -51,16 +51,16 @@ def generate_hex(name, input, testonly = 0, tags=[]):
 
 def default_embedded_binary(name, uploader, **kwargs):
     native.cc_binary(
-        name = "_" + name + "ELF",
+        name = name + "_" + "ELF",
         **kwargs
     )
     generate_hex(
         name = name,
-        input = "_" + name + "ELF",
+        input = name + "_" + "ELF",
     )
     generate_upload_scripts()
     upload(
-        name = "_" + name + "Upload",
+        name = name + "_" + "upload",
         srcs = [name],
         upload_script = uploader,
     )
