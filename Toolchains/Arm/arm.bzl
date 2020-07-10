@@ -14,8 +14,10 @@ def _impl(repository_ctx):
     paths = resolve_labels(repository_ctx, [
         prefix + "BUILD.bazel.tpl",
         prefix + "cc_toolchain_config.bzl",
-        prefix + "platforms/BUILD.bazel.tpl"
+        prefix + "platforms/BUILD.bazel.tpl",
+        prefix + "helpers.bzl.tpl"
     ])
+    repository_ctx.file("BUILD.bazel")
     repository_ctx.template(
         "cc_toolchain/BUILD.bazel",
         paths[prefix + "BUILD.bazel.tpl"],
@@ -40,6 +42,10 @@ def _impl(repository_ctx):
     repository_ctx.template(
         "platforms/BUILD.bazel",
         paths[prefix + "platforms/BUILD.bazel.tpl"],
+    )
+    repository_ctx.template(
+        "helpers.bzl",
+        paths[prefix + "helpers.bzl.tpl"],
     )
 
 _attributes = {
