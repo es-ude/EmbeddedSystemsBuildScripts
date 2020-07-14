@@ -8,7 +8,7 @@ DFU_UPLOAD_SCRIPT_TEMPLATE = """
 """
 
 AVRDUDE_UPLOAD_SCRIPT_TEMPLATE = """
-avrdude -c wiring -p \$$1 -P /dev/ttyACM0 -D -V -U flash:w:\$$2" > $@
+avrdude -c wiring -p \$$1 -P /dev/ttyACM0 -D -V -U flash:w:\$$2
 """
 
 genrule(
