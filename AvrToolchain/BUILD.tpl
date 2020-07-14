@@ -8,7 +8,7 @@ DFU_UPLOAD_SCRIPT_TEMPLATE = """
 """
 
 AVRDUDE_UPLOAD_SCRIPT_TEMPLATE = """
-avrdude -c wiring -p $$1 -P $$3 -D -V -U flash:w:$$2
+avrdude -c arduino -p $$1 -D -V -U flash:w:$$2:i -U flash:v:$$2:i -b 57600 -P $$3
 """
 
 genrule(
