@@ -23,7 +23,7 @@ def generate_avrdude_upload_script():
     native.genrule(
         name="avrdude",
         outs=["avrdude_upload_script.sh"],
-        cmd="""echo "avrdude -c """ + programmer + """ -p \$$1 -P \$$3 -D -V -U flash:w:\$$2" > $@""",
+        cmd="""echo "avrdude -c """ + programmer + """ -p \$$1 -b \$$4 -P \$$3 -D -V -U flash:w:\$$2" > $@""",
     )
 
 def generate_upload_scripts():
