@@ -20,6 +20,7 @@ load(
     "//Toolchains/Avr:platforms/platforms.bzl",
     "write_constraints",
 )
+
 load(
     "//Toolchains/Avr:platforms/platform_list.bzl",
     "platforms",

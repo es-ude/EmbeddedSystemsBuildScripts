@@ -1,0 +1,1 @@
+ARM_RESOURCE_PREFIX = "@EmbeddedSystemsBuildScripts//Toolchains/Arm"

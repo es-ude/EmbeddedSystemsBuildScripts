@@ -79,11 +79,11 @@ cc_toolchain_config = rule(
         "host_system_name": attr.string(),
         "target_system_name": attr.string(default = "k8"),
         "toolchain_identifier": attr.string(default = "arm-toolchain"),
-        "target_cpu": attr.string(default = "cortex-m0plus"),
+        "target_cpu": attr.string(default = "arm"),
         "target_libc": attr.string(default = "nano"),
         "abi_version": attr.string(default = "unknown"),
         "tools": attr.string_dict(),
         "cxx_include_dirs": attr.string_list(),
     },
-    provides = [CcToolchainConfigInfo],
+    provides = [CcToolchainConfigInfo, platform_common.TemplateVariableInfo],
 )
