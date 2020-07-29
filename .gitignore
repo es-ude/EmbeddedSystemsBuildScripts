@@ -4,3 +4,4 @@
 bazel-*
 docs/_build/
 docs/xml
+.DS_Store
