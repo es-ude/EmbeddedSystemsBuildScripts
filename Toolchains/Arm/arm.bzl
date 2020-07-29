@@ -47,34 +47,34 @@ def _impl(repository_ctx):
     write_constraints(repository_ctx, paths)
     create_cc_toolchain_package(repository_ctx, paths)
     repository_ctx.file("BUILD.bazel")
-    repository_ctx.template(
-        "cc_toolchain/BUILD.bazel",
-        paths[prefix + "BUILD.bazel.tpl"],
-        substitutions = {
-            "@cxx_include_directories@": "{}".format(cxx_include_paths),
-            "@gcc@": tools["gcc"],
-            "@g++@": tools["g++"],
-            "@objcopy@": tools["objcopy"],
-            "@nm@": tools["nm"],
-            "@strip@": tools["strip"],
-            "@objdump@": tools["objdump"],
-            "@gcov@": tools["gcov"],
-            "@ld@": tools["ld"],
-            "@ar@": tools["ar"],
-            "@size@": tools["size"],
-        },
-    )
-    repository_ctx.template(
-        "cc_toolchain/cc_toolchain_config.bzl",
-        paths[prefix + "cc_toolchain_config.bzl"],
-    )
+    # repository_ctx.template(
+    #     "cc_toolchain/BUILD.bazel",
+    #     paths[prefix + "BUILD.bazel.tpl"],
+    #     substitutions = {
+    #         "@cxx_include_directories@": "{}".format(cxx_include_paths),
+    #         "@gcc@": tools["gcc"],
+    #         "@g++@": tools["g++"],
+    #         "@objcopy@": tools["objcopy"],
+    #         "@nm@": tools["nm"],
+    #         "@strip@": tools["strip"],
+    #         "@objdump@": tools["objdump"],
+    #         "@gcov@": tools["gcov"],
+    #         "@ld@": tools["ld"],
+    #         "@ar@": tools["ar"],
+    #         "@size@": tools["size"],
+    #     },
+    # )
+    # repository_ctx.template(
+    #     "cc_toolchain/cc_toolchain_config.bzl",
+    #     paths[ARM_RESOURCE_PREFIX + ":cc_toolchain/cc_toolchain_config.bzl"],
+    # )
     repository_ctx.template(
         "platforms/BUILD.bazel",
-        paths[prefix + "platforms/BUILD.bazel.tpl"],
+        paths[ARM_RESOURCE_PREFIX + ":platforms/BUILD.bazel.tpl"],
     )
     repository_ctx.template(
         "helpers.bzl",
-        paths[prefix + "helpers.bzl.tpl"],
+        paths[ARM_RESOURCE_PREFIX + ":helpers.bzl.tpl"],
     )
 
 _attributes = {
@@ -103,7 +103,8 @@ def arm_toolchain():
         name = "ArmToolchain",
         cpu_list = platforms
     )
-    for cpu in platforms:
-        native.register_toolchains(
-            "@ArmToolchain//cc_toolchain:cc-toolchain-arm-" + cpu
-        )
+    # for cpu in platforms:
+    #     native.register_toolchains(
+    #         "@ArmToolchain//cc_toolchain:cc-toolchain-arm-" + cpu
+    #     )
+    native.register_toolchains("@ArmToolchain//cc_toolchain:cc-toolchain-arm-cortex-m4")

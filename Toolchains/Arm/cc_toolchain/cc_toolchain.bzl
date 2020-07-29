@@ -23,7 +23,7 @@ def get_tools(repository_ctx, prefix = ""):
     return tools
 
 def arm_tools(repository_ctx):
-    return get_tools(repository_ctx, "arm-")
+    return get_tools(repository_ctx, "arm-none-eabi-")
 
 def _get_treat_warnings_as_errors_flags(repository_ctx, gcc):
     # below flags are most certainly coding errors

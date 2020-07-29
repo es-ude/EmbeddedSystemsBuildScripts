@@ -10,7 +10,7 @@ package(
     default_visibility = ["//visibility:public"]
 )
 
-constraint_values(
+constraint_value(
     name = "arm",
     constraint_setting = "@bazel_tools//platforms:cpu"
 )
@@ -19,9 +19,9 @@ config_setting(
     name = "arm_config"
 )
 
-constraint_values(
+constraint_value(
     name = "bare_metal",
-    constraint_setting = "@bazel_tools//platform:os"
+    constraint_setting = "@bazel_tools//platforms:os"
 )
 
 platform(
@@ -33,10 +33,10 @@ platform(
 )
 
 platform(
-    name = "cortex-m4"
+    name = "cortex-m4",
     constraint_values = [
         "@ArmToolchain//platforms/cpu:cortex-m4",
-        "@ArmToolchain//platforms/board_id:arm_elastic_node_config"
+        "@ArmToolchain//platforms/board_id:cortex-m4_config"
     ],
     parents = [":arm_common"]
 )
