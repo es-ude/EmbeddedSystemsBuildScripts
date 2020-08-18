@@ -10,6 +10,32 @@ load(
 )
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 
+__GENERAL_COPTS = [
+    "-std=gnu11",
+    "-O0",
+    "-g3",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-Wall",
+]
+
+__ARM_COPTS = [
+    "--specs=nano.specs",
+    "-mfpu=fpv4-sp-16",
+    "-mfloat-abi=hard",
+    "-mthumb",
+]
+
+__LINKER_OPTS = [
+    "--specs=nosys.specs",
+    "-Wl, --gc-sections",
+    "-static",
+    "-mfpu=fpv4-sp-16",
+    "-mfloat-abi=hard",
+    "-mthumb",
+    "-Wl, --start-group -lc -lm -Wl, --end-group",
+]
+
 def new_feature(name, flags, enabled = False, actions = []):
     ALL_ACTIONS = [
         ACTION_NAMES.assemble,
@@ -52,11 +78,14 @@ def _impl(ctx):
         )
         for key in tools
     ]
-    features = [
-        new_feature("architecture", enabled = True, flags=["-mcpu=" + ctx.attr.target_cpu]),
-        new_feature("build_flags", enabled = True, flags=["-std=gnu11", "-g3", "-DUSE_HAL_DRIVER", "-DDEBUG", "-DSTM32F407xx", "-O0", "-ffunction-sections", "-fdata-sections", "-Wall", "--specs=nano.specs", "-mfpu=fpv4-sp-d16", "-mfloat-abi=hard", "-mthumb"]),
-        new_feature("linker_flags", enabled = True, flags=["-mcpu=cortex-m4", "--specs=nosys.specs", "-Wl,--gc-sections", "-static", "-mfpu=fpv4-sp-d16", "-mfloat-abi=hard", "-mthumb", "-Wl,--start-group -lc -lm -Wl,--end-group"], actions = [ACTION_NAMES.cpp_link_executable])
-    ]
+    
+    opt_feature = new_feature("opt", __GENERAL_COPTS)
+    arm_feature = new_feature("arm", __ARM_COPTS)
+    linker_feature = new_feature("linker", __LINKER_OPTS)
+    features = [opt_feature, arm_feature, linker_feature]
+    
+    if ctx.attr.cpu != "none":
+        features.append(new_feature("cpu_architecture", ["-mcpu=" + ctx.attr.cpu], True))
 
     return [cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
@@ -71,7 +100,9 @@ def _impl(ctx):
         tool_paths = tool_paths,
         features = features,
         cxx_builtin_include_directories = ctx.attr.cxx_include_dirs,
-    )]
+    ),
+    platform_common.TemplateVariableInfo({'CPU': ctx.attr.cpu})
+    ]
 
 cc_toolchain_config = rule(
     implementation = _impl,
@@ -79,6 +110,7 @@ cc_toolchain_config = rule(
         "host_system_name": attr.string(),
         "target_system_name": attr.string(default = "k8"),
         "toolchain_identifier": attr.string(default = "arm-toolchain"),
+        "cpu": attr.string(default = "none"),
         "target_cpu": attr.string(default = "arm"),
         "target_libc": attr.string(default = "nano"),
         "abi_version": attr.string(default = "unknown"),

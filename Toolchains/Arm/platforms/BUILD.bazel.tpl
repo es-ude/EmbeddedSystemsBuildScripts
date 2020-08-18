@@ -33,10 +33,10 @@ platform(
 )
 
 platform(
-    name = "cortex-m4",
+    name = "arm_ElasticNode",
     constraint_values = [
         "@ArmToolchain//platforms/cpu:cortex-m4",
-        "@ArmToolchain//platforms/board_id:cortex-m4_config"
+        "@ArmToolchain//platforms/board_id:arm_ElasticNode"
     ],
     parents = [":arm_common"]
 )

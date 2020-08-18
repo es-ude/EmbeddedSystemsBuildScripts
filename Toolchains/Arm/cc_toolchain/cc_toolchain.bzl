@@ -1,7 +1,8 @@
-load("//Toolchains:third_party.bzl", "add_compiler_option_if_supported",
+load(
+    "//Toolchains:third_party.bzl",
+    "add_compiler_option_if_supported",
     "get_cxx_inc_directories",
 )
-
 load("//Toolchains/Arm:common_definitions.bzl", "ARM_RESOURCE_PREFIX")
 
 def get_tools(repository_ctx, prefix = ""):
@@ -118,14 +119,12 @@ def create_cc_toolchain_package(repository_ctx, paths):
     tools = arm_tools(repository_ctx)
     cpu_list = repository_ctx.attr.cpu_list
     repository_ctx.file(
-        "cc_toolchain/BUILD",
+        "cc_toolchain/BUILD.bazel",
         create_toolchain_definitions(
             tools,
             cpu_list,
             repository_ctx,
         ),
     )
-    cc_toolchain_rule_template = paths[
-        ARM_RESOURCE_PREFIX + ":cc_toolchain/cc_toolchain_config.bzl.tpl"
-    ]
+    cc_toolchain_rule_template = paths[ARM_RESOURCE_PREFIX + ":cc_toolchain/cc_toolchain_config.bzl.tpl"]
     create_cc_toolchain_config_rule(repository_ctx, tools["gcc"])

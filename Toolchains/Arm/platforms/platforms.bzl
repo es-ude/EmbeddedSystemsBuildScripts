@@ -21,7 +21,7 @@ def write_constraints(repository_ctx, paths):
         repository_ctx,
         "board_id",
         [
-            "cortex-m4"
+            "arm_ElasticNode"
         ],
         "platforms/board_id/BUILD",
     )

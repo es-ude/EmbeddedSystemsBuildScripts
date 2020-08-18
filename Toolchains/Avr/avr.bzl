@@ -1,33 +1,21 @@
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "workspace_and_buildfile")
 load(
     "@bazel_tools//tools/cpp:lib_cc_configure.bzl",
-    "auto_configure_fail",
-    "auto_configure_warning",
-    "escape_string",
-    "get_env_var",
-    "get_starlark_list",
     "resolve_labels",
-    "split_escaped",
-    "which",
 )
 load(
     "//Toolchains/Avr:cc_toolchain/cc_toolchain.bzl",
     "avr_tools",
     "create_cc_toolchain_package",
 )
-
 load(
     "//Toolchains/Avr:platforms/platforms.bzl",
     "write_constraints",
 )
-
 load(
     "//Toolchains/Avr:platforms/platform_list.bzl",
     "platforms",
 )
-
 load("//Toolchains/Avr:common_definitions.bzl", "AVR_RESOURCE_PREFIX")
-
 
 def _avr_toolchain_impl(repository_ctx):
     tools = avr_tools(repository_ctx)
@@ -35,7 +23,7 @@ def _avr_toolchain_impl(repository_ctx):
         repository_ctx,
         [AVR_RESOURCE_PREFIX + ":" + label for label in [
             "cc_toolchain/cc_toolchain_config.bzl.tpl",
-            "platforms/cpu_frequency/cpu_frequency.bzl.tpl",
+            "platforms/_frequency/cpu_frequency.bzl.tpl",
             "platforms/misc/BUILD.tpl",
             "platforms/BUILD.tpl",
             "helpers.bzl.tpl",
