@@ -156,3 +156,9 @@ In order to use the mocked header file instead of the original, the include dire
 ```c
 #include "lib/MockFunctions.h"
 ```
+
+### Known Issues
+
+#### Supported avrdude programmers
+
+`avrdude` works with different programmers for different boards. Amongst other things, they provide the pin configuration. For more information run `man avrdude` in your shell. Currently our build scripts only support the programmers `arduino`, which is used for the ArduinoUno and `wiring`, used for the ArduinoMega.

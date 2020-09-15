@@ -8,34 +8,48 @@ DFU_UPLOAD_SCRIPT_TEMPLATE = """
 """
 
 AVRDUDE_UPLOAD_SCRIPT_TEMPLATE = """
-avrdude -c arduino -p $$1 -P /dev/ttyACM0 -D -V -U flash:w:$$2
+avrdude -c {programmer} -p $$1 -D -V -U flash:w:$$2
 """
 
 genrule(
     name = "dfu_upload_script",
     outs = ["dfu_upload_script.sh"],
-    cmd = "echo '" + select({
-        "@AvrToolchain//host_config:dfu_needs_sudo": DFU_UPLOAD_SCRIPT_TEMPLATE.format(
-            export = "",
-            sudo = "sudo ",
-        ),
-        "@AvrToolchain//host_config:dfu_needs_ask_pass": DFU_UPLOAD_SCRIPT_TEMPLATE.format(
-            export = "export SUDO_ASKPASS=$(ASKPASS)",
-            sudo = "sudo ",
-        ),
-        "//conditions:default": DFU_UPLOAD_SCRIPT_TEMPLATE.format(
-            export = "",
-            sudo = "",
-        ),
-    }) + "' > $@",
+    cmd = "echo '" +
+          select(
+              {
+                  "@AvrToolchain//host_config:dfu_needs_sudo": DFU_UPLOAD_SCRIPT_TEMPLATE.format(
+                      export = "",
+                      sudo = "sudo ",
+                  ),
+                  "@AvrToolchain//host_config:dfu_needs_ask_pass": DFU_UPLOAD_SCRIPT_TEMPLATE.format(
+                      export = "export SUDO_ASKPASS=$(ASKPASS)",
+                      sudo = "sudo ",
+                  ),
+                  "//conditions:default": DFU_UPLOAD_SCRIPT_TEMPLATE.format(
+                      export = "",
+                      sudo = "",
+                  ),
+              },
+          ) +
+          "' > $@",
 )
 
 genrule(
     name = "avrdude_upload_script",
     outs = ["avrdude_upload_script.sh"],
-    cmd = " echo '" + select({
-        "//conditions:default": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
-            
-        )
-    }) + "' > $@",
+    cmd = " echo '" +
+          select(
+              {
+                  "@AvrToolchain//platforms/programmer:arduino_config": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
+                      programmer = "arduino",
+                  ),
+                  "@AvrToolchain//platforms/programmer:wiring_config": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
+                      programmer = "wiring",
+                  ),
+                  "//conditions:default": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
+                      programmer = "",
+                  ),
+              },
+          ) +
+          "' > $@",
 )
