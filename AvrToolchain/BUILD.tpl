@@ -8,7 +8,7 @@ DFU_UPLOAD_SCRIPT_TEMPLATE = """
 """
 
 AVRDUDE_UPLOAD_SCRIPT_TEMPLATE = """
-avrdude -c {programmer} -p $$1 -P $$3 -D -V -U flash:w:$$2
+avrdude -c {programmer} -p $$1 -D -V -U flash:w:$$2
 """
 
 genrule(

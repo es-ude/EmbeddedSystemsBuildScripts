@@ -115,6 +115,7 @@ toolchain(
 
 def create_cc_toolchain_package(repository_ctx, paths):
     tools = avr_tools(repository_ctx)
+    check_for_missing_tools(tools)
     mcu_list = repository_ctx.attr.mcu_list
     repository_ctx.file(
         "cc_toolchain/BUILD",
@@ -128,3 +129,8 @@ def create_cc_toolchain_package(repository_ctx, paths):
         "@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/cc_toolchain_config.bzl.tpl"
     ]
     create_cc_toolchain_config_rule(repository_ctx, tools["gcc"])
+
+def check_for_missing_tools(tools):
+    for key in tools.keys():
+        if "None" in tools[key]:
+            fail("Unable to find the avr-%s toolchain, make sure avr-gcc and avr-binutils are installed and accecable from your path environment" % key)

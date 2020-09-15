@@ -89,7 +89,7 @@ We already ship some platform definitions
 for platforms that we use internally.
 You can see a list of these definitions by running::
 
-  $ bazel query `(kind:platform, @AvrToolchain//platforms:*)`
+  $ bazel query `(kind:platform, @AvrToolchain//platforms:*)
 
 To compile for one of these platforms use e.g.::
 

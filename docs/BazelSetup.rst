@@ -40,8 +40,8 @@ also able to fetch a suited binary from the Github releases.
 
 * run ``go get github.com/bazelbuild/bazelisk`` in your command line
 * add to your PATH variable: ``export PATH=$PATH:$(go env GOPATH)/bin``
-* you may also want to simlink ``bazelisk`` to ``bazel``, but that's not 
-really necessary
+* you may also want to simlink ``bazelisk`` to ``bazel``, but that's not really necessary
+
 
 MacOS
 ~~~~~
