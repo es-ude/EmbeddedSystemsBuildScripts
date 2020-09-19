@@ -1,8 +1,8 @@
-load("//Toolchains:third_party.bzl", "add_compiler_option_if_supported",
+load(
+    "//Toolchains/Avr:cc_toolchain/third_party.bzl",
+    "add_compiler_option_if_supported",
     "get_cxx_inc_directories",
 )
-
-load("//Toolchains/Avr:common_definitions.bzl", "AVR_RESOURCE_PREFIX")
 
 def get_tools(repository_ctx, prefix = ""):
     tools = {
@@ -45,7 +45,7 @@ def _get_treat_warnings_as_errors_flags(repository_ctx, gcc):
 def create_cc_toolchain_config_rule(repository_ctx, gcc):
     repository_ctx.template(
         "cc_toolchain/cc_toolchain_config.bzl",
-        repository_ctx.path(Label(AVR_RESOURCE_PREFIX + ":cc_toolchain/cc_toolchain_config.bzl.tpl")),
+        repository_ctx.path(Label("@EmbeddedSystemsBuildScripts//Toolchains/Avr:cc_toolchain/cc_toolchain_config.bzl.tpl")),
         substitutions = {
             "@warnings_as_errors@": "{}".format(_get_treat_warnings_as_errors_flags(repository_ctx, gcc)),
         },
@@ -116,6 +116,7 @@ toolchain(
 
 def create_cc_toolchain_package(repository_ctx, paths):
     tools = avr_tools(repository_ctx)
+    check_for_missing_tools(tools)
     mcu_list = repository_ctx.attr.mcu_list
     repository_ctx.file(
         "cc_toolchain/BUILD",
@@ -125,7 +126,10 @@ def create_cc_toolchain_package(repository_ctx, paths):
             repository_ctx,
         ),
     )
-    cc_toolchain_rule_template = paths[
-        AVR_RESOURCE_PREFIX + ":cc_toolchain/cc_toolchain_config.bzl.tpl"
-    ]
+    cc_toolchain_rule_template = paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:cc_toolchain/cc_toolchain_config.bzl.tpl"]
     create_cc_toolchain_config_rule(repository_ctx, tools["gcc"])
+
+def check_for_missing_tools(tools):
+    for key in tools.keys():
+        if "None" in tools[key]:
+            fail("Unable to find the avr-%s toolchain, make sure avr-gcc and avr-binutils are installed and accecable from your path environment" % key)

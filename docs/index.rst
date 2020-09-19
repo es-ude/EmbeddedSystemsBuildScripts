@@ -8,8 +8,9 @@ for avr-gcc and unit testing with the Unity framework.
 .. toctree::
   :caption: For Users
 
+  BazelSetup
   AvrToolchain
-  Unity
+  Unittest
 
 .. toctree::
   :caption: For Developers

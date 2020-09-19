@@ -1,5 +1,3 @@
-load("//Toolchains/Avr:common_definitions.bzl", "AVR_RESOURCE_PREFIX")
-
 def _write_mcu_constraints(repository_ctx, mcu_list):
     _write_constraints(repository_ctx, "mcu", mcu_list, "platforms/mcu/BUILD")
 
@@ -23,12 +21,15 @@ def write_constraints(repository_ctx, paths):
     _write_mcu_constraints(repository_ctx, repository_ctx.attr.mcu_list)
     repository_ctx.template(
         "platforms/cpu_frequency/cpu_frequency.bzl",
-        paths[AVR_RESOURCE_PREFIX + ":platforms/cpu_frequency/cpu_frequency.bzl.tpl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/cpu_frequency/cpu_frequency.bzl.tpl"],
     )
     _write_constraints(
         repository_ctx,
         "uploader",
-        ["dfu_programmer", "avrdude"],
+        [
+            "dfu_programmer",
+            "avrdude",
+        ],
         "platforms/uploader/BUILD",
     )
     _write_constraints(
@@ -41,9 +42,18 @@ def write_constraints(repository_ctx, paths):
             "elastic_node_v4",
             "elastic_node_v4_monitor",
             "arduino_uno",
-            "arduino_mega_config",
+            "arduino_mega",
         ],
         "platforms/board_id/BUILD",
     )
-    repository_ctx.template("platforms/misc/BUILD", paths[AVR_RESOURCE_PREFIX + ":platforms/misc/BUILD.tpl"])
-    repository_ctx.template("platforms/BUILD", paths[AVR_RESOURCE_PREFIX + ":platforms/BUILD.tpl"])
+    _write_constraints(
+        repository_ctx,
+        "programmer",
+        [
+            "arduino",
+            "wiring",
+        ],
+        "platforms/programmer/BUILD",
+    )
+    repository_ctx.template("platforms/misc/BUILD", paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/misc/BUILD.tpl"])
+    repository_ctx.template("platforms/BUILD", paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/BUILD.tpl"])

@@ -27,7 +27,7 @@ For more detailed documentation see [docs](https://embeddedsystemsbuildscripts.r
 ### AvrToolchain
 To be able to build for avr microcontrollers you add the following lines to your `WORKSPACE`:
 ```python
-load("@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl", "avr_toolchain")
+load("@EmbeddedSystemsBuildScripts//Toolchains/Avr:avr.bzl", "avr_toolchain")
 
 avr_toolchain()
 ```
@@ -35,7 +35,7 @@ This will generate an external Workspace, containing a toolchain definition for 
 
 Use
 ```bash
-$ bazel query 'kind(constraint_setting, @AvrToolchain//platforms/...)'
+$ bazel query 'kind(constraint_setting, @Toolchains/Avr//platforms/...)'
 ```
 to retrieve a list of all defined constraint settings. These are dimensions from which you can choose values to define your own platform.
 Note that the constraint_setting `board_id` is used by the department to refer to development boards.

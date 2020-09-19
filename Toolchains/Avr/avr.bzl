@@ -15,15 +15,15 @@ load(
     "//Toolchains/Avr:platforms/platform_list.bzl",
     "platforms",
 )
-load("//Toolchains/Avr:common_definitions.bzl", "AVR_RESOURCE_PREFIX")
 
 def _avr_toolchain_impl(repository_ctx):
+    prefix = "@EmbeddedSystemsBuildScripts//Toolchains/Avr:"
     tools = avr_tools(repository_ctx)
     paths = resolve_labels(
         repository_ctx,
-        [AVR_RESOURCE_PREFIX + ":" + label for label in [
+        [prefix + label for label in [
             "cc_toolchain/cc_toolchain_config.bzl.tpl",
-            "platforms/_frequency/cpu_frequency.bzl.tpl",
+            "platforms/cpu_frequency/cpu_frequency.bzl.tpl",
             "platforms/misc/BUILD.tpl",
             "platforms/BUILD.tpl",
             "helpers.bzl.tpl",
@@ -37,25 +37,25 @@ def _avr_toolchain_impl(repository_ctx):
     create_cc_toolchain_package(repository_ctx, paths)
     repository_ctx.template(
         "helpers.bzl",
-        paths[AVR_RESOURCE_PREFIX + ":helpers.bzl.tpl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:helpers.bzl.tpl"],
         substitutions = {
             "{avr_objcopy}": tools["objcopy"],
             "{avr_size}": tools["size"],
         },
     )
     repository_ctx.file("BUILD")
-    repository_ctx.template("host_config/BUILD", paths[AVR_RESOURCE_PREFIX + ":host_config/BUILD.tpl"])
+    repository_ctx.template("host_config/BUILD", paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:host_config/BUILD.tpl"])
     repository_ctx.template(
         "platforms/platform_list.bzl",
-        paths[AVR_RESOURCE_PREFIX + ":platforms/platform_list.bzl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/platform_list.bzl"],
     )
     repository_ctx.template(
         "platforms/mcu/mcu.bzl",
-        paths[AVR_RESOURCE_PREFIX + ":platforms/mcu/mcu.bzl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/mcu/mcu.bzl"],
     )
     repository_ctx.template(
         "BUILD",
-        paths[AVR_RESOURCE_PREFIX + ":BUILD.tpl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:BUILD.tpl"],
     )
 
 _get_avr_toolchain_def_attrs = {

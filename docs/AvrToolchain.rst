@@ -16,8 +16,8 @@ found useful for reducing code size.
 .. _repository_rule: https://docs.bazel.build/versions/master/skylark/repository_rules.html
 .. |http_archive| replace:: ``http_archive``
 .. _http_archive: https://docs.bazel.build/versions/master/skylark/repository_rules.html
-.. |avr.bzl| replace:: ``@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl``
-.. _avr.bzl: https://github.com/es-ude/EmbeddedSystemsBuildScripts/blob/master/AvrToolchain/avr.bzl
+.. |avr.bzl| replace:: ``@EmbeddedSystemsBuildScripts//Toolchains/Avr:avr.bzl``
+.. _avr.bzl: https://github.com/es-ude/EmbeddedSystemsBuildScripts/blob/master/Toolchains/Avr/avr.bzl
 .. _platforms: https://docs.bazel.build/versions/master/platforms.html
 .. _Platforms: https://docs.bazel.build/versions/master/platforms.html
 
@@ -47,7 +47,7 @@ to depend on the current master branch.
 Now you can call the repository rule, that will create the necessary avr toolchains
 and platforms. Add::
 
-  load("@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl", "avr_toolchain")
+  load("@EmbeddedSystemsBuildScripts//Toolchains/Avr:avr.bzl", "avr_toolchain")
   
   avr_toolchain()
 
@@ -89,11 +89,15 @@ We already ship some platform definitions
 for platforms that we use internally.
 You can see a list of these definitions by running::
 
-  $ bazel query `(kind:platform, @AvrToolchain//platforms:*)`
+  $ bazel query `(kind:platform, @AvrToolchain//platforms:*)
 
 To compile for one of these platforms use e.g.::
 
   $ bazel build //:myTarget --platforms @AvrToolchain//platforms:Motherboard
+
+By default, we compile with the feature named ``gnu99``, that adds ``--std=gnu99`` to the build command. However, if you want to
+build with avr-g++ ``-std=gnu99`` is an invalid flag and can be disabled by
+adding the build flag ``--feature=-gnu99``.
 
 How to define your own platforms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
