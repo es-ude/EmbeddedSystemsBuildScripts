@@ -76,6 +76,23 @@ To treat warnings that most probably come from programming errors - e.g. missing
 --features=treat_warnings_as_errors
 ```
 
+### Arm Toolchain
+
+To be able to build for arm cpu's you add the following lines to your `WORKSPACE`:
+```python
+load("@EmbeddedSystemsBuildScripts//Toolchains/Arm:arm.bzl", "arm_toolchain")
+
+avr_toolchain()
+```
+And the following lines to your projects `BUILD` file:
+```python
+load("@ArmToolchain//:helpers.bzl", "generate_stm_upload_script")
+
+generate_stm_upload_script(name = Name)
+```
+
+Additional information can be derived from the `AvrToolchain` section above.
+
 ### Macros
 #### Embedded Builds
 While there is no difference in how native and embedded cc_* targets are defined, actually being able to program a device involves more steps.
@@ -94,10 +111,29 @@ default_embedded_binary(
 )
 ```
 
-The above call will create hex file with the target name `"main"`, an elf file with the name `"_mainELF"` and an upload script that receives the hex file as it's argument named `"_mainUpload"`.
+The above call will create hex file with the target name `"main"`, an elf file with the name `"main_ELF"` and an upload script that receives the hex file as it's argument named `"main_upload"`.
 
 Additionally the `cpu_frequency_flag` macro is loaded. It simply resolves the applied cpu frequency constraint to the matching symbol definition flag, accessible in the source files
 by the c macro `F_CPU`.
+
+Building for an ARM target device can be done by using the `default_arm_binary` macro.
+
+```python
+load("@ArmToolchain//:helpers.bzl", "default_arm_binary", "generate_stm_upload_script")
+
+generate_stm_upload_script(name = arm_upload)
+
+default_arm_binary(
+    name = "main",
+    srcs = ["main.c"],
+    deps = [":MyLib"],
+    uploader = "arm_upload",
+    additional_linker_inputs = ["MY_LINKER_FILE.ld"]
+    linkopts = ["-T MY_LINKER_FILE.ld"]
+)
+```
+
+Please be aware, that the upload script needs to be created manually beforehand, and passed into the `default_arm_binary` macro as a parameter.
 
 #### Unity
 ###### unity_test
