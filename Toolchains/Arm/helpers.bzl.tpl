@@ -26,7 +26,7 @@ def default_arm_binary(name, uploader=None, **kwargs):
     generate_hex(
         name=name, input=name + "_" + "ELF",
     )
-    upload(name=name + "_" + "Upload", srcs=[name], upload_script=uploader)
+    upload(name=name + "_" + "upload", srcs=[name], upload_script=uploader)
 
 
 def generate_stm_upload_script(name):
