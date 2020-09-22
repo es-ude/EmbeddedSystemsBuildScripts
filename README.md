@@ -22,12 +22,12 @@ http_archive(
 Where `<version>` is the version number of the scripts, that you want to use.
 
 ### Documentation
-While this Readme should answer the first questions, a more in depth documentation can be found [here](https://embeddedsystemsbuildscripts.readthedocs.io/en/latest/)
+For more detailed documentation see [docs](https://embeddedsystemsbuildscripts.readthedocs.io/en/latest/)
 
 ### AvrToolchain
 To be able to build for avr microcontrollers you add the following lines to your `WORKSPACE`:
 ```python
-load("@EmbeddedSystemsBuildScripts//AvrToolchain:avr.bzl", "avr_toolchain")
+load("@EmbeddedSystemsBuildScripts//Toolchains/Avr:avr.bzl", "avr_toolchain")
 
 avr_toolchain()
 ```
@@ -35,7 +35,7 @@ This will generate an external Workspace, containing a toolchain definition for 
 
 Use
 ```bash
-$ bazel query 'kind(constraint_setting, @AvrToolchain//platforms/...)'
+$ bazel query 'kind(constraint_setting, @Toolchains/Avr//platforms/...)'
 ```
 to retrieve a list of all defined constraint settings. These are dimensions from which you can choose values to define your own platform.
 Note that the constraint_setting `board_id` is used by the department to refer to development boards.
@@ -81,6 +81,22 @@ By default, we compile with the feature called `gnu99`, that adds `--std=gnu99` 
 ```bash
 --feature=-gnu99
 ```
+### Arm Toolchain
+
+To be able to build for arm cpu's you add the following lines to your `WORKSPACE`:
+```python
+load("@EmbeddedSystemsBuildScripts//Toolchains/Arm:arm.bzl", "arm_toolchain")
+
+avr_toolchain()
+```
+And the following lines to your projects `BUILD` file:
+```python
+load("@ArmToolchain//:helpers.bzl", "generate_stm_upload_script")
+
+generate_stm_upload_script(name = Name)
+```
+
+Additional information can be derived from the `AvrToolchain` section above.
 
 ### Macros
 #### Embedded Builds
@@ -100,12 +116,30 @@ default_embedded_binary(
 )
 ```
 
-The above call will create hex file with the target name `"main"`, an elf file with the name `"_mainELF"` and an upload script that receives the hex file as it's argument named `"_mainUpload"`.
+The above call will create hex file with the target name `"main"`, an elf file with the name `"main_ELF"` and an upload script that receives the hex file as it's argument named `"main_upload"`.
 
 Additionally the `cpu_frequency_flag` macro is loaded. It simply resolves the applied cpu frequency constraint to the matching symbol definition flag, accessible in the source files
 by the c macro `F_CPU`.
 
 Additional `copts` can be added by concatenating `cpu_frequency_flag()` with a list of the desired `copts`, i.e. `copts = cpu_frequency_flag() + ["-DDEBUG=1"]`.
+Building for an ARM target device can be done by using the `default_arm_binary` macro.
+
+```python
+load("@ArmToolchain//:helpers.bzl", "default_arm_binary", "generate_stm_upload_script")
+
+generate_stm_upload_script(name = arm_upload)
+
+default_arm_binary(
+    name = "main",
+    srcs = ["main.c"],
+    deps = [":MyLib"],
+    uploader = "arm_upload",
+    additional_linker_inputs = ["MY_LINKER_FILE.ld"]
+    linkopts = ["-T MY_LINKER_FILE.ld"]
+)
+```
+
+Please be aware, that the upload script needs to be created manually beforehand, and passed into the `default_arm_binary` macro as a parameter.
 
 #### Unity
 ###### unity_test

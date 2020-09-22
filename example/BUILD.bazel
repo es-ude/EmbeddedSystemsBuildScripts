@@ -7,12 +7,23 @@ default_embedded_binary(
     copts = cpu_frequency_flag(),
 )
 
+cc_binary(
+    name = "normal_main",
+    srcs = ["main.c"],
+)
 
 platform(
-    name = "MyPlatform",
+    name = "MyAVRPlatform",
     constraint_values = [
         "@AvrToolchain//platforms/mcu:atmega328p",
         "@AvrToolchain//platforms/cpu_frequency:8mhz"
     ],
     parents = ["@AvrToolchain//platforms:avr_common"]
+)
+
+platform(
+    name = "MyArmPlatform",
+    constraint_values = [
+        "@bazel_tools//platforms:arm",
+    ]
 )

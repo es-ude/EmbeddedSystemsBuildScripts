@@ -1,5 +1,6 @@
-load("//AvrToolchain:cc_toolchain/third_party.bzl", "add_compiler_option_if_supported",
-
+load(
+    "//Toolchains/Avr:cc_toolchain/third_party.bzl",
+    "add_compiler_option_if_supported",
     "get_cxx_inc_directories",
 )
 
@@ -44,7 +45,7 @@ def _get_treat_warnings_as_errors_flags(repository_ctx, gcc):
 def create_cc_toolchain_config_rule(repository_ctx, gcc):
     repository_ctx.template(
         "cc_toolchain/cc_toolchain_config.bzl",
-        repository_ctx.path(Label("@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/cc_toolchain_config.bzl.tpl")),
+        repository_ctx.path(Label("@EmbeddedSystemsBuildScripts//Toolchains/Avr:cc_toolchain/cc_toolchain_config.bzl.tpl")),
         substitutions = {
             "@warnings_as_errors@": "{}".format(_get_treat_warnings_as_errors_flags(repository_ctx, gcc)),
         },
@@ -125,9 +126,7 @@ def create_cc_toolchain_package(repository_ctx, paths):
             repository_ctx,
         ),
     )
-    cc_toolchain_rule_template = paths[
-        "@EmbeddedSystemsBuildScripts//AvrToolchain:cc_toolchain/cc_toolchain_config.bzl.tpl"
-    ]
+    cc_toolchain_rule_template = paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:cc_toolchain/cc_toolchain_config.bzl.tpl"]
     create_cc_toolchain_config_rule(repository_ctx, tools["gcc"])
 
 def check_for_missing_tools(tools):

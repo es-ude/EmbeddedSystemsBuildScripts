@@ -1,5 +1,7 @@
 .vscode/
 .clwb/
+.idea/
 bazel-*
 docs/_build/
 docs/xml
+.DS_Store

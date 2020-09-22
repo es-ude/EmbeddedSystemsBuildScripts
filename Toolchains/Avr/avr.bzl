@@ -1,31 +1,23 @@
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "workspace_and_buildfile")
 load(
     "@bazel_tools//tools/cpp:lib_cc_configure.bzl",
-    "auto_configure_fail",
-    "auto_configure_warning",
-    "escape_string",
-    "get_env_var",
-    "get_starlark_list",
     "resolve_labels",
-    "split_escaped",
-    "which",
 )
 load(
-    "//AvrToolchain:cc_toolchain/cc_toolchain.bzl",
+    "//Toolchains/Avr:cc_toolchain/cc_toolchain.bzl",
     "avr_tools",
     "create_cc_toolchain_package",
 )
 load(
-    "//AvrToolchain:platforms/platforms.bzl",
+    "//Toolchains/Avr:platforms/platforms.bzl",
     "write_constraints",
 )
 load(
-    "//AvrToolchain:platforms/platform_list.bzl",
+    "//Toolchains/Avr:platforms/platform_list.bzl",
     "platforms",
 )
 
 def _avr_toolchain_impl(repository_ctx):
-    prefix = "@EmbeddedSystemsBuildScripts//AvrToolchain:"
+    prefix = "@EmbeddedSystemsBuildScripts//Toolchains/Avr:"
     tools = avr_tools(repository_ctx)
     paths = resolve_labels(
         repository_ctx,
@@ -45,25 +37,25 @@ def _avr_toolchain_impl(repository_ctx):
     create_cc_toolchain_package(repository_ctx, paths)
     repository_ctx.template(
         "helpers.bzl",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:helpers.bzl.tpl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:helpers.bzl.tpl"],
         substitutions = {
             "{avr_objcopy}": tools["objcopy"],
             "{avr_size}": tools["size"],
         },
     )
     repository_ctx.file("BUILD")
-    repository_ctx.template("host_config/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:host_config/BUILD.tpl"])
+    repository_ctx.template("host_config/BUILD", paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:host_config/BUILD.tpl"])
     repository_ctx.template(
         "platforms/platform_list.bzl",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/platform_list.bzl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/platform_list.bzl"],
     )
     repository_ctx.template(
         "platforms/mcu/mcu.bzl",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/mcu/mcu.bzl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/mcu/mcu.bzl"],
     )
     repository_ctx.template(
         "BUILD",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:BUILD.tpl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:BUILD.tpl"],
     )
 
 _get_avr_toolchain_def_attrs = {

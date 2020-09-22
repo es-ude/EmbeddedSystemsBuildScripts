@@ -1,0 +1,3 @@
+platforms=[
+    "cortex-m4",
+]

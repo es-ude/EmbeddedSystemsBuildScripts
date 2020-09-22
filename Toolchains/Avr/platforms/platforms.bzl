@@ -21,7 +21,7 @@ def write_constraints(repository_ctx, paths):
     _write_mcu_constraints(repository_ctx, repository_ctx.attr.mcu_list)
     repository_ctx.template(
         "platforms/cpu_frequency/cpu_frequency.bzl",
-        paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/cpu_frequency/cpu_frequency.bzl.tpl"],
+        paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/cpu_frequency/cpu_frequency.bzl.tpl"],
     )
     _write_constraints(
         repository_ctx,
@@ -55,5 +55,5 @@ def write_constraints(repository_ctx, paths):
         ],
         "platforms/programmer/BUILD",
     )
-    repository_ctx.template("platforms/misc/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/misc/BUILD.tpl"])
-    repository_ctx.template("platforms/BUILD", paths["@EmbeddedSystemsBuildScripts//AvrToolchain:platforms/BUILD.tpl"])
+    repository_ctx.template("platforms/misc/BUILD", paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/misc/BUILD.tpl"])
+    repository_ctx.template("platforms/BUILD", paths["@EmbeddedSystemsBuildScripts//Toolchains/Avr:platforms/BUILD.tpl"])
