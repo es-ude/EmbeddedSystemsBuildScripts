@@ -122,6 +122,18 @@ Additionally the `cpu_frequency_flag` macro is loaded. It simply resolves the ap
 by the c macro `F_CPU`.
 
 Additional `copts` can be added by concatenating `cpu_frequency_flag()` with a list of the desired `copts`, i.e. `copts = cpu_frequency_flag() + ["-DDEBUG=1"]`.
+
+
+Since `v.1.0`, the upload_script may need to be specified as an additional argument if you're using the `default_embedded_binary` macro. Possible values for this parameter are:
+
+```
+upload_script = "@AvrToolchain//:dfu_upload_script"
+
+or
+
+upload_script = "@AvrToolchain//:avrdude_upload_script"
+```
+
 Building for an ARM target device can be done by using the `default_arm_binary` macro.
 
 ```python
