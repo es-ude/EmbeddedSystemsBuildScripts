@@ -8,7 +8,7 @@ DFU_UPLOAD_SCRIPT_TEMPLATE = """
 """
 
 AVRDUDE_UPLOAD_SCRIPT_TEMPLATE = """
-avrdude -c {programmer} -p $$1 -P $$3 -D -V -U flash:w:$$2
+avrdude -c {programmer} -p $$1 -P $$3 -D -V -U flash:w:$$2 -e
 """
 
 genrule(
@@ -42,6 +42,9 @@ genrule(
             ),
             "@AvrToolchain//platforms/programmer:wiring_config": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
                 programmer="wiring",
+            ),
+            "@AvrToolchain//platforms/programmer:stk500_config": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
+                programmer="stk500",
             ),
             "//conditions:default": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
                 programmer="",
