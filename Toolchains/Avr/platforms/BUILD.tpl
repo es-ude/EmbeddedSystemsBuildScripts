@@ -29,6 +29,7 @@ platform(
         "@AvrToolchain//platforms/misc:has_mrf",
         "@AvrToolchain//platforms/cpu_frequency:8mhz",
         "@AvrToolchain//platforms/board_id:motherboard",
+        "@AvrToolchain//platforms/programmer:stk500",
     ],
     parents=[":avr_common"],
 )
@@ -77,6 +78,7 @@ platform(
         "@AvrToolchain//platforms/misc:lufa_uart",
         "@AvrToolchain//platforms/mcu:atmega32u4",
         "@AvrToolchain//platforms/board_id:elastic_node_v4_monitor",
+        "@AvrToolchain//platforms/programmer:stk500",
     ],
     parents=[":avr_common"],
 )
