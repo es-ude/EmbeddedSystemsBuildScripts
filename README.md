@@ -81,6 +81,9 @@ By default, we compile with the feature called `gnu99`, that adds `--std=gnu99` 
 ```bash
 --feature=-gnu99
 ```
+
+Since `v1.0` of the EmbeddedSystemsBuildScripts, the `bazel run` command of the AvrToolchain requires a positional argument, which specifies the port of the programmer. Positional arguments are applied with two dashes, after the initial command, i.e. `bazel run //package:target_upload --platform=... -- /dev/ttyXYZ`
+
 ### Arm Toolchain
 
 To be able to build for arm cpu's you add the following lines to your `WORKSPACE`:
