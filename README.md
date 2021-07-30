@@ -93,7 +93,7 @@ To be able to build for arm cpu's you add the following lines to your `WORKSPACE
 ```python
 load("@EmbeddedSystemsBuildScripts//Toolchains/Arm:arm.bzl", "arm_toolchain")
 
-avr_toolchain()
+arm_toolchain()
 ```
 And the following lines to your projects `BUILD` file:
 ```python
