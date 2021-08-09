@@ -21,11 +21,12 @@ def write_constraints(repository_ctx, paths):
         repository_ctx,
         "board_id",
         [
-            "arm_ElasticNode"
+            "arm_ElasticNode",
+            "ElasticNode_v5",
         ],
         "platforms/board_id/BUILD",
     )
     repository_ctx.template(
         "platforms/BUILD.bazel.tpl",
-        paths[ARM_RESOURCE_PREFIX + ":platforms/BUILD.bazel.tpl"]
+        paths[ARM_RESOURCE_PREFIX + ":platforms/BUILD.bazel.tpl"],
     )

@@ -1,6 +1,12 @@
-workspace (
-        name = "EmbeddedSystemsBuildScripts",
-        )
+workspace(
+    name = "EmbeddedSystemsBuildScripts",
+)
+
+http_archive(
+    name = "platforms",
+    strip_prefix = "platforms-master",
+    urls = ["https://github.com/bazelbuild/platforms/archive/master.tar.gz"],
+)
 
 load("//Toolchains/Avr:avr.bzl", "avr_toolchain")
 
