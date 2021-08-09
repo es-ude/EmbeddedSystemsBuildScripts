@@ -53,6 +53,7 @@ def write_constraints(repository_ctx, paths):
             "arduino",
             "wiring",
             "stk500",
+            "avrispmkII",
         ],
         "platforms/programmer/BUILD",
     )

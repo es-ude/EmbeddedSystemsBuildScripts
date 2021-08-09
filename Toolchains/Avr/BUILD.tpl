@@ -46,6 +46,9 @@ genrule(
             "@AvrToolchain//platforms/programmer:stk500_config": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
                 programmer="stk500",
             ),
+            "@AvrToolchain//platforms/programmer:avrispmkII_config": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
+                programmer="avrispmkII",
+            ),
             "//conditions:default": AVRDUDE_UPLOAD_SCRIPT_TEMPLATE.format(
                 programmer="",
             ),
