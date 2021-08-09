@@ -8,7 +8,7 @@
 
 package(default_visibility=["//visibility:public"])
 
-constraint_value(name="arm", constraint_setting="@bazel_tools//platforms:cpu")
+constraint_value(name="arm", constraint_setting="@platforms//cpu")
 
 config_setting(name="arm_config")
 
